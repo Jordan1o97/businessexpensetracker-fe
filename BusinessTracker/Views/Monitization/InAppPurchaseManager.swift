@@ -28,6 +28,7 @@ class InAppPurchaseManager: NSObject, ObservableObject, SKProductsRequestDelegat
     func requestProducts() {
         let productIdentifiers = Set(["ca.icubemedia.bet"])
         let productRequest  = SKProductsRequest(productIdentifiers: productIdentifiers)
+        print(productRequest)
         productRequest.delegate = self
         productRequest.start()
     }

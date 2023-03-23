@@ -19,7 +19,7 @@ class InterstitialAdController: NSObject, GADFullScreenContentDelegate {
 
     func loadInterstitialAd() {
         let request = GADRequest()
-        GADInterstitialAd.load(withAdUnitID: "ca-app-pub-3940256099942544/4411468910", request: request) { [weak self] (ad, error) in
+        GADInterstitialAd.load(withAdUnitID: "ca-app-pub-9324761796430059/6793125518", request: request) { [weak self] (ad, error) in
             if let error = error {
                 print("Loading failed: \(error.localizedDescription)")
             } else {

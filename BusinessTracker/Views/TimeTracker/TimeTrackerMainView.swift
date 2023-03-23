@@ -34,7 +34,7 @@ struct TimeTrackerMainView: View {
                             .frame(width: 24, height: 24)
                     }
                     .padding(.trailing, 20) // Add custom padding to create a gap between the button and the right edge
-                    .fullScreenCover(isPresented: $showAddJobView) {
+                    .sheet(isPresented: $showAddJobView) {
                         AddJobView(isPresented: $showAddJobView)
                             .onDisappear(perform: fetchJobs)
                     }
@@ -77,7 +77,7 @@ struct TimeTrackerMainView: View {
                 .padding(.top)
                 .frame(width: UIScreen.main.bounds.width * 0.90)
                 .onAppear(perform: fetchJobs)
-                .fullScreenCover(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 })) {
+                .sheet(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 })) {
                     EditJobView(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 }), job: selectedJob!)
                         .onDisappear(perform: fetchJobs)
                 }

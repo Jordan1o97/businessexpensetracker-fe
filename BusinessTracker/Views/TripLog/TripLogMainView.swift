@@ -43,7 +43,7 @@ struct TripLogMainView: View {
                             .frame(width: 24, height: 24)
                     }
                     .padding(.trailing, 20) // Add custom padding to create a gap between the button and the right edge
-                    .fullScreenCover(isPresented: $showAddTripLogView) {
+                    .sheet(isPresented: $showAddTripLogView) {
                          AddTripLogView(isPresented: $showAddTripLogView)
                             .onDisappear(perform: fetchTripLogs)
                     }
@@ -86,7 +86,7 @@ struct TripLogMainView: View {
                 .padding(.top)
                 .frame(width: UIScreen.main.bounds.width * 0.90)
                 .onAppear(perform: fetchTripLogs)
-                .fullScreenCover(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 })) {
+                .sheet(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 })) {
                     EditTripLogView(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 }), tripLog: selectedTripLog!)
                         .onDisappear(perform: fetchTripLogs)
                 }
