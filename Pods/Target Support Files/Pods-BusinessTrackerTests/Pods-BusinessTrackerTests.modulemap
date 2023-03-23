@@ -1,0 +1,6 @@
+framework module Pods_BusinessTrackerTests {
+  umbrella header "Pods-BusinessTrackerTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
