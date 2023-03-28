@@ -115,30 +115,31 @@ struct TimeTrackerMainView: View {
         }
         
         self.isAnimating = true
-
-        JobService().fetchFilteredJobsAndClients(userId: userId, authToken: token, selectedFilter: selectedFilter) { result in
-            switch result {
-                case .success(let (groupedJobs, clientNames)):
-                    DispatchQueue.main.async {
-                        let sortedGroupedJobs = groupedJobs.map { (key, jobs) -> (String, [Job]) in
-                            if selectedFilter == 1 || selectedFilter == 2 || selectedFilter == 3 {
-                                let groupedJobs = jobs.sorted(by: { $0.start.compare($1.start) == .orderedDescending })
-                                return (key, groupedJobs)
-                            } else {
-                                return (key, jobs)
+        DispatchQueue.global(qos: .background).async {
+            JobService().fetchFilteredJobsAndClients(userId: userId, authToken: token, selectedFilter: selectedFilter) { result in
+                switch result {
+                    case .success(let (groupedJobs, clientNames)):
+                        DispatchQueue.main.async {
+                            let sortedGroupedJobs = groupedJobs.map { (key, jobs) -> (String, [Job]) in
+                                if selectedFilter == 1 || selectedFilter == 2 || selectedFilter == 3 {
+                                    let groupedJobs = jobs.sorted(by: { $0.start.compare($1.start) == .orderedDescending })
+                                    return (key, groupedJobs)
+                                } else {
+                                    return (key, jobs)
+                                }
                             }
+                            self.jobs = groupedJobs.flatMap { $0.1 } // Flatten the array of jobs
+                            self.clientNames = clientNames
+                            self.groupedJobs = groupedJobs
+                            self.isAnimating = false
+                            print("groupedJobs: \(self.groupedJobs)")
+                            print("Clients: \(self.clientNames)")
                         }
-                        self.jobs = groupedJobs.flatMap { $0.1 } // Flatten the array of jobs
-                        self.clientNames = clientNames
-                        self.groupedJobs = groupedJobs
+                case .failure(let error):
+                    print("Error fetching jobs and clients: \(error)")
+                    DispatchQueue.global(qos: .background).async {
                         self.isAnimating = false
-                        print("groupedJobs: \(self.groupedJobs)")
-                        print("Clients: \(self.clientNames)")
                     }
-            case .failure(let error):
-                print("Error fetching jobs and clients: \(error)")
-                DispatchQueue.main.async {
-                    self.isAnimating = false
                 }
             }
         }

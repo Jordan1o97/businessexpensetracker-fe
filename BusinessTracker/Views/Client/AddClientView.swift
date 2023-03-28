@@ -38,7 +38,7 @@ struct AddClientView: View {
         }
 
         ClientService().createClient(client: newClient, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let client):
@@ -90,46 +90,46 @@ struct AddClientView: View {
                     Section {
                         HStack {
                             Text("Name:")
-                            TextField("Name", text: $name)
+                            TextField("Apple", text: $name)
                         }
                         HStack {
                             Text("Email Address:")
-                            TextField("Email Address", text: $emailAddress)
+                            TextField("apple@apple.com", text: $emailAddress)
                                 .keyboardType(.emailAddress)
                         }
                         HStack {
                             Text("Office Phone:")
-                            TextField("Office Phone", text: $officePhone)
+                            TextField("(797)765-6655", text: $officePhone)
                                 .keyboardType(.phonePad)
                         }
                         HStack {
                             Text("Mobile Phone:")
-                            TextField("Mobile Phone", text: $mobilePhone)
+                            TextField("(797)765-7744", text: $mobilePhone)
                                 .keyboardType(.phonePad)
                         }
                         HStack {
                             Text("Address Line 1:")
-                            TextField("Address Line 1", text: $addressLine1)
+                            TextField("1 Apple Park Dr", text: $addressLine1)
                         }
                         HStack {
                             Text("Address Line 2:")
-                            TextField("Address Line 2", text: $addressLine2)
+                            TextField("300", text: $addressLine2)
                         }
                         HStack {
                             Text("City:")
-                            TextField("City", text: $city)
+                            TextField("Los Angelos", text: $city)
                         }
                         HStack {
                             Text("State/Province:")
-                            TextField("State/Province", text: $stateOrProvince)
+                            TextField("Californa", text: $stateOrProvince)
                         }
                         HStack {
                             Text("Postal Code:")
-                            TextField("Postal Code", text: $postalCode)
+                            TextField("90210", text: $postalCode)
                         }
                         HStack {
                             Text("Country:")
-                            TextField("Country", text: $country)
+                            TextField("USA", text: $country)
                         }
                     }
                 }

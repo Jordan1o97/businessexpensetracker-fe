@@ -26,12 +26,12 @@ struct BottomBarView: View {
                             activeTab = .receipts
                         }
                     
-                        TabBarButtonView(imageName: "car.fill", title: "Milage", isActive: activeTab == .triplog) {
+                        TabBarButtonView(imageName: "car.fill", title: "Mileage", isActive: activeTab == .triplog) {
                             activeTab = .triplog
                         }
 
                         Spacer()
-                            .frame(width: 75)
+                            .frame(width: 95)
 
                         TabBarButtonView(imageName: "clock.fill", title: "Tracker", isActive: activeTab == .timesheet) {
                             activeTab = .timesheet
@@ -61,18 +61,18 @@ struct BottomBarView: View {
                 UIApplication.shared.windows.first?.rootViewController?.present(scannerViewController, animated: true)
             }, label: {
                 Circle()
-                        .frame(width: 75, height: 150)
+                        .frame(width: 50, height: 100)
                         .foregroundColor(.blue)
                         .overlay(
                             Image(systemName: "camera.fill")
                                 .resizable()
-                                .frame(width: 50, height: 40)
+                                .frame(width: 35, height: 25)
                                 .foregroundColor(.white) // set foreground color to gray
                         )
                         .padding(.horizontal, 12)
                         .shadow(radius: 4)
             })
-            .padding(.bottom, -7.5),
+            .padding(.bottom, 15),
             alignment: .bottom
         )
         .sheet(isPresented: $isPresentingAddReceiptView) {

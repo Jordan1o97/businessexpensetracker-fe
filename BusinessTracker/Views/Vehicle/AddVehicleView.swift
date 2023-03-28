@@ -29,7 +29,7 @@ struct AddVehicleView: View {
         }
 
         VehicleService().createVehicle(vehicle: newVehicle, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let vehicle):
@@ -80,7 +80,7 @@ struct AddVehicleView: View {
                 Form {
                     HStack {
                         Text("Name: ")
-                        TextField("Name", text: $name)
+                        TextField("Ford F150", text: $name)
                     }
                 }
 

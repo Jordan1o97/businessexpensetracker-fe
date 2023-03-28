@@ -30,7 +30,7 @@ struct EditVehicleView: View {
         }
 
         VehicleService().saveVehicle(vehicle: newVehicle, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let vehicle):
@@ -61,7 +61,7 @@ struct EditVehicleView: View {
 
                     Spacer()
 
-                    Text("New Vehicle")
+                    Text("Edit Vehicle")
                         .font(.system(size: 20, weight: .medium, design: .default))
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(.leading, 20)
@@ -81,7 +81,7 @@ struct EditVehicleView: View {
                 Form {
                     HStack {
                         Text("Name: ")
-                        TextField("Name", text: $name)
+                        TextField("Ford F150", text: $name)
                     }
                 }
 

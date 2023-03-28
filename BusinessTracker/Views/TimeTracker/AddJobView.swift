@@ -33,7 +33,7 @@ struct AddJobView: View {
         }
 
         JobService().createJob(job: newJob, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let job):
@@ -94,24 +94,24 @@ struct AddJobView: View {
                         }
                         HStack {
                             Text("Income:")
-                            TextField("Income", text: $income)
+                            TextField("25.00", text: $income)
                                 .keyboardType(.numberPad)
                         }
                         HStack {
                             Text("Rate:")
-                            TextField("Rate", text: $rate)
+                            TextField("10.00", text: $rate)
                                 .keyboardType(.numberPad)
                         }
                         HStack {
                             Text("Project:")
-                            TextField("Project", text: $job)
+                            TextField("App Development", text: $job)
                         }
                         HStack {
                             Text("Client:")
                             Button(action: {
                                 showClientMainView.toggle()
                             }) {
-                                Text(client.name.isEmpty ? "Select Client" : "\(client.name)")
+                                Text(client.name.isEmpty ? "Apple" : "\(client.name)")
                                     .foregroundColor(client.name.isEmpty ? .gray : .primary)
                             }
                             .sheet(isPresented: $showClientMainView) {
@@ -120,11 +120,11 @@ struct AddJobView: View {
                         }
                         HStack {
                             Text("Task:")
-                            TextField("Task", text: $task)
+                            TextField("Developing", text: $task)
                         }
                         HStack {
                             Text("Notes:")
-                            TextField("Notes", text: $notes)
+                            TextField("Hope you enjoy :)", text: $notes)
                         }
                     }
                 }

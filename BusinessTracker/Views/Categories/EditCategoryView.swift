@@ -20,31 +20,6 @@ struct EditCategoryView: View {
         return !name.isEmpty
     }
 
-    func saveCategory() {
-        isLoading = true
-
-        let newCategory = Category(name: name, icon: icon, id: category.id)
-
-        guard let token = getToken() else {
-            print("Token not found")
-            return
-        }
-
-        CategoryService().saveCategory(category: newCategory, authToken: token) { result in
-            DispatchQueue.main.async {
-                isLoading = false
-                switch result {
-                case .success(let category):
-                    print("Category saved: \(category)")
-                    isPresented = false
-                case .failure(let error):
-                    print("Error saving category: \(error)")
-                    isPresented = false
-                }
-            }
-        }
-    }
-
     var body: some View {
         ZStack {
             Color(.systemGray6).edgesIgnoringSafeArea(.all)
@@ -62,7 +37,7 @@ struct EditCategoryView: View {
 
                     Spacer()
 
-                    Text("New Category")
+                    Text("Edit Category")
                         .font(.system(size: 20, weight: .medium, design: .default))
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(.leading, 20)
@@ -83,7 +58,7 @@ struct EditCategoryView: View {
                     Section {
                         HStack {
                             Text("Name: ")
-                            TextField("Name", text: $name)
+                            TextField("Building Supplies", text: $name)
                         }
                         HStack {
                             Text("Icon: ")
@@ -121,6 +96,32 @@ struct EditCategoryView: View {
             
         }
     }
+    
+    func saveCategory() {
+        isLoading = true
+
+        let newCategory = Category(name: name, icon: icon, id: category.id)
+
+        guard let token = getToken() else {
+            print("Token not found")
+            return
+        }
+
+        CategoryService().saveCategory(category: newCategory, authToken: token) { result in
+            DispatchQueue.global(qos: .background).async {
+                isLoading = false
+                switch result {
+                case .success(let category):
+                    print("Category saved: \(category)")
+                    isPresented = false
+                case .failure(let error):
+                    print("Error saving category: \(error)")
+                    isPresented = false
+                }
+            }
+        }
+    }
+    
 }
 
 struct EditCategoryView_Previews: PreviewProvider {

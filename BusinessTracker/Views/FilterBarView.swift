@@ -15,7 +15,7 @@ struct FilterBarView: View {
                         selectedFilter = index
                     }) {
                         Text(filterTitles[index])
-                            .font(.system(size: 16))
+                            .font(.system(size: 14))
                             .foregroundColor(selectedFilter == index ? .white : Color(#colorLiteral(red: 0.231372549, green: 0.4470588235, blue: 0.9294117647, alpha: 1)))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)

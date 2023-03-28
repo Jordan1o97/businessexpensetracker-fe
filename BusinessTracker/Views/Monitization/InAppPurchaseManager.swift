@@ -23,6 +23,7 @@ class InAppPurchaseManager: NSObject, ObservableObject, SKProductsRequestDelegat
     override init() {
         super.init()
         requestProducts()
+        SKPaymentQueue.default().add(self)
     }
     
     func requestProducts() {
@@ -31,66 +32,112 @@ class InAppPurchaseManager: NSObject, ObservableObject, SKProductsRequestDelegat
         print(productRequest)
         productRequest.delegate = self
         productRequest.start()
+        print("⚠️", "Requesting Purchases")
     }
     
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        if let product = response.products.first {
-            subscriptionProduct = product
-        } else {
-            print("No products found")
-        }
-
-        if !response.invalidProductIdentifiers.isEmpty {
-            print("Invalid product identifiers: \(response.invalidProductIdentifiers)")
+        DispatchQueue.global(qos: .background).async {
+            if let product = response.products.first{
+                self.subscriptionProduct = product
+                print("⚠️", "\(self.subscriptionProduct ) Product in question")
+            } else {
+                print("No products found")
+            }
+            
+            if !response.invalidProductIdentifiers.isEmpty {
+                print("Invalid product identifiers: \(response.invalidProductIdentifiers)")
+            }
         }
     }
-
+    
     
     func purchase(product: SKProduct) {
+        clearTransactionQueue()
         let payment = SKPayment(product: product)
         SKPaymentQueue.default().add(payment)
+        print("⚠️", "Adding to queue: \(product)")
+    }
+    
+    func clearTransactionQueue() {
+        for transaction in SKPaymentQueue.default().transactions {
+            SKPaymentQueue.default().finishTransaction(transaction)
+        }
     }
     
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
-        
+        print("⚠️", "App is in Queue")
         guard let userId = getCurrentUserId() else {
             print("User ID not found")
             return
         }
-
+        
         guard let token = getToken() else {
             print("Token not found")
             return
         }
         
-        for transaction in transactions {
-            switch transaction.transactionState {
-            case .purchased, .restored:
-                UserDefaults.standard.set("paid", forKey: "accountType")
-                UserServie().updateUserAccountType(userId: userId, authToken: token, accountType: "paid") { result in
-                    switch result {
-                    case .success(let message):
-                        print(message)
-                    case .failure(let error):
-                        print("Error updating user account type: \(error.localizedDescription)")
+        DispatchQueue.global(qos: .background).async {
+            for transaction in transactions {
+                switch transaction.transactionState {
+                case .purchased, .restored:
+                    // Extract receipt data
+                    guard let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
+                          FileManager.default.fileExists(atPath: appStoreReceiptURL.path) else {
+                        // Handle missing receipt
+                        print("Missing receipt")
+                        continue
                     }
+                    
+                    do {
+                        print("⚠️", "App is about to send api")
+                        let receiptData = try Data(contentsOf: appStoreReceiptURL)
+                        // Send receipt data to your server for validation
+                        UserServie().validateReceipt(receiptData: receiptData) { result in
+                            DispatchQueue.global(qos: .background).async { 
+                                switch result {
+                                case .success(let expiryDate):
+                                    // Handle the result of the validation
+                                    print("Validation successful. Expiry date: \(expiryDate?.description ?? "N/A")")
+                                    UserDefaults.standard.set("paid", forKey: "accountType")
+                                    UserServie().updateUserAccountType(userId: userId, authToken: token, accountType: "paid") { result in
+                                        switch result {
+                                        case .success(let message):
+                                            print(message)
+                                        case .failure(let error):
+                                            print("Error updating user account type: \(error.localizedDescription)")
+                                        }
+                                    }
+                                    if let expiryDate = transaction.subscriptionExpiryDate {
+                                        // Save the expiry date and other relevant data
+                                        UserDefaults.standard.set(expiryDate, forKey: "subscriptionExpiryDate")
+                                    }
+                                    queue.finishTransaction(transaction)
+                                case .failure(let error):
+                                    print("Error validating receipt: \(error.localizedDescription)")
+                                    // Handle the error accordingly
+                                }
+                            }
+                        }
+                    } catch {
+                        // Handle error reading receipt data
+                        print("Error reading receipt data: \(error.localizedDescription)")
+                    }
+                    
+                case .failed:
+                    print("Transaction failed: \(transaction.error?.localizedDescription ?? "unknown error")")
+                    queue.finishTransaction(transaction)
+                    
+                case .deferred, .purchasing:
+                    break
+                    
+                @unknown default:
+                    fatalError("Unknown transaction state encountered")
                 }
-                if let expiryDate = transaction.subscriptionExpiryDate {
-                    // Save the expiry date and other relevant data
-                    UserDefaults.standard.set(expiryDate, forKey: "subscriptionExpiryDate")
-                }
-                SKPaymentQueue.default().finishTransaction(transaction)
-                
-            case .failed, .deferred:
-                // Handle the error or defer the transaction
-                SKPaymentQueue.default().finishTransaction(transaction)
-                
-            default:
-                break
             }
         }
     }
 }
+
 
 extension SKPaymentTransaction {
     var subscriptionExpiryDate: Date? {

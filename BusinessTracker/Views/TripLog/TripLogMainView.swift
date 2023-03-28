@@ -125,35 +125,37 @@ struct TripLogMainView: View {
         }
         
         self.isAnimating = true
-
-        TriplogService().fetchFilteredTripLogClientsAndVehicles(userId: userId, authToken: token, selectedFilter: selectedFilter) { result in
-            switch result {
-            case .success(let (groupedTripLogs, clientNames, vehicleNames)):
-                DispatchQueue.main.async {
-                    let sortedGroupedTripLogs = groupedTripLogs.map { (key, tripLogs) -> (String, [TripLog]) in
-                        if selectedFilter == 1 || selectedFilter == 2 || selectedFilter == 3 {
-                            let groupedTripLogs = tripLogs.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
-                            return (key, groupedTripLogs)
-                        } else {
-                            return (key, tripLogs)
+        DispatchQueue.global(qos: .background).async {
+            TriplogService().fetchFilteredTripLogClientsAndVehicles(userId: userId, authToken: token, selectedFilter: selectedFilter) { result in
+                switch result {
+                case .success(let (groupedTripLogs, clientNames, vehicleNames)):
+                    DispatchQueue.main.async {
+                        let sortedGroupedTripLogs = groupedTripLogs.map { (key, tripLogs) -> (String, [TripLog]) in
+                            if selectedFilter == 1 || selectedFilter == 2 || selectedFilter == 3 {
+                                let groupedTripLogs = tripLogs.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
+                                return (key, groupedTripLogs)
+                            } else {
+                                return (key, tripLogs)
+                            }
                         }
+                        self.tripLogs = groupedTripLogs.flatMap { $0.1 } // Flatten the array of trip logs
+                        self.clientNames = clientNames
+                        self.vehicleNames = vehicleNames
+                        self.groupedTripLogs = groupedTripLogs
+                        self.isAnimating = false
+                        print("groupedTripLogs: \(self.groupedTripLogs)")
+                        print("Clients: \(self.clientNames)")
+                        print("Vehicles: \(self.vehicleNames)")
                     }
-                    self.tripLogs = groupedTripLogs.flatMap { $0.1 } // Flatten the array of trip logs
-                    self.clientNames = clientNames
-                    self.vehicleNames = vehicleNames
-                    self.groupedTripLogs = groupedTripLogs
-                    self.isAnimating = false
-                    print("groupedTripLogs: \(self.groupedTripLogs)")
-                    print("Clients: \(self.clientNames)")
-                    print("Vehicles: \(self.vehicleNames)")
-                }
-            case .failure(let error):
-                print("Error fetching trip logs, clients, and vehicles: \(error)")
-                DispatchQueue.main.async {
-                    self.isAnimating = false
+                case .failure(let error):
+                    print("Error fetching trip logs, clients, and vehicles: \(error)")
+                    DispatchQueue.global(qos: .background).async {
+                        self.isAnimating = false
+                    }
                 }
             }
         }
+        
     }
 }
 

@@ -93,14 +93,14 @@ struct VehicleMainView: View {
         VehicleService().fetchVehiclesByUserId(userId: userId, authToken: token) { result in
             switch result {
             case .success(let fetchedVehicles):
-                DispatchQueue.main.async {
+                DispatchQueue.global(qos: .background).async {
                     self.vehicles = fetchedVehicles
                     self.isAnimating = false
                     print("Vehicles: \(self.vehicles)")
                 }
             case .failure(let error):
                 print("Error fetching vehicles: \(error)")
-                DispatchQueue.main.async {
+                DispatchQueue.global(qos: .background).async {
                     self.isAnimating = false
                 }
             }

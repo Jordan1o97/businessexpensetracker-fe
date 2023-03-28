@@ -23,8 +23,9 @@ struct AdButton<Content: View>: View {
     var body: some View {
         Button(action: {
             let randomNumber = Double.random(in: 0...1)
+            // randomNumber <= probabilityToShowAd &&
 
-            if randomNumber <= probabilityToShowAd && accountType == "free" {
+            if accountType == "free" {
                 if let rootController = UIApplication.shared.windows.first?.rootViewController {
                     adController.onAdDismissed = {
                         // Execute the original button function after the ad is dismissed

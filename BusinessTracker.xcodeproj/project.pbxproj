@@ -72,6 +72,7 @@
 		3C63530A29CC10A0006D9F5B /* InAppPurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C63530929CC10A0006D9F5B /* InAppPurchaseManager.swift */; };
 		3C63530C29CCB901006D9F5B /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C63530B29CCB901006D9F5B /* SubscriptionManager.swift */; };
 		3C63530E29CCDE1C006D9F5B /* BannerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C63530D29CCDE1C006D9F5B /* BannerContainerView.swift */; };
+		3CA6CB1529D22F8B0024B997 /* SubscriptionPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA6CB1429D22F8A0024B997 /* SubscriptionPromptView.swift */; };
 		69C8FBA9C4843784E1060535 /* Pods_BusinessTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90E12B19AC95CC847D9164E8 /* Pods_BusinessTracker.framework */; };
 		6DBAEBF3C0CF995D1A138654 /* Pods_BusinessTracker_BusinessTrackerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16BEEFA29491453D197BF8F9 /* Pods_BusinessTracker_BusinessTrackerUITests.framework */; };
 		787BD38D9D75FCAB76E086BC /* Pods_BusinessTrackerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66B5267C05FC597A9D1A9C55 /* Pods_BusinessTrackerTests.framework */; };
@@ -165,6 +166,7 @@
 		3C63530929CC10A0006D9F5B /* InAppPurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseManager.swift; sourceTree = "<group>"; };
 		3C63530B29CCB901006D9F5B /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
 		3C63530D29CCDE1C006D9F5B /* BannerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerContainerView.swift; sourceTree = "<group>"; };
+		3CA6CB1429D22F8A0024B997 /* SubscriptionPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionPromptView.swift; sourceTree = "<group>"; };
 		566D8ADE2835BA5C465BEE6A /* Pods-BusinessTrackerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BusinessTrackerTests.release.xcconfig"; path = "Target Support Files/Pods-BusinessTrackerTests/Pods-BusinessTrackerTests.release.xcconfig"; sourceTree = "<group>"; };
 		652195BCE322498E6BB54E34 /* Pods-BusinessTracker-BusinessTrackerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BusinessTracker-BusinessTrackerUITests.release.xcconfig"; path = "Target Support Files/Pods-BusinessTracker-BusinessTrackerUITests/Pods-BusinessTracker-BusinessTrackerUITests.release.xcconfig"; sourceTree = "<group>"; };
 		66B5267C05FC597A9D1A9C55 /* Pods_BusinessTrackerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BusinessTrackerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -492,6 +494,7 @@
 				3C63530929CC10A0006D9F5B /* InAppPurchaseManager.swift */,
 				3C63530B29CCB901006D9F5B /* SubscriptionManager.swift */,
 				3C63530D29CCDE1C006D9F5B /* BannerContainerView.swift */,
+				3CA6CB1429D22F8A0024B997 /* SubscriptionPromptView.swift */,
 			);
 			path = Monitization;
 			sourceTree = "<group>";
@@ -765,6 +768,7 @@
 				3C6352FD29CB7B69006D9F5B /* PDFPreviewView.swift in Sources */,
 				3C5EBBDD29C793F3005CB2D0 /* AddCategoryView.swift in Sources */,
 				3C5EBBBC29C64564005CB2D0 /* UserService.swift in Sources */,
+				3CA6CB1529D22F8B0024B997 /* SubscriptionPromptView.swift in Sources */,
 				3C5EBB7929C12FC4005CB2D0 /* SignUpView.swift in Sources */,
 				3C5EBBB129C518F8005CB2D0 /* VehicleView.swift in Sources */,
 				3C5EBB6529BFAC7A005CB2D0 /* TabBarButtonView.swift in Sources */,
@@ -988,7 +992,9 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1023,7 +1029,9 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

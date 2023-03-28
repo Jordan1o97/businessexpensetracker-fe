@@ -23,26 +23,28 @@ struct CategorySettingView: View {
             VStack {
                 HStack {
                     BannerContainerView()
-                    Text("Category Tracker")
-                        .font(.system(size: 20, weight: .semibold))
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.leading, 50)
+                    HStack {
+                        Text("Category Tracker")
+                            .font(.system(size: 20, weight: .semibold))
+                            .frame(maxWidth: .infinity, alignment: .center)
 
-                    Spacer()
+                        Spacer()
 
-                    AdButton(onButtonAction: {
-                        showAddCategoryView.toggle()
-                    }) {
-                        Image(systemName: "plus")
-                            .resizable()
-                            .foregroundColor(.black)
-                            .frame(width: 24, height: 24)
+                        AdButton(onButtonAction: {
+                            showAddCategoryView.toggle()
+                        }) {
+                            Image(systemName: "plus")
+                                .resizable()
+                                .foregroundColor(.black)
+                                .frame(width: 24, height: 24)
+                        }
+                        .padding(.trailing, 20) // Add custom padding to create a gap between the button and the right edge
+                        .fullScreenCover(isPresented: $showAddCategoryView) {
+                            AddVehicleView(isPresented: $showAddCategoryView)
+                                .onDisappear(perform: fetchCategories)
+                        }
                     }
-                    .padding(.trailing, 20) // Add custom padding to create a gap between the button and the right edge
-                    .fullScreenCover(isPresented: $showAddCategoryView) {
-                        AddCategoryView(isPresented: $showAddCategoryView)
-                            .onDisappear(perform: fetchCategories)
-                    }
+                    .padding(.horizontal)
                 }
                 .padding(.horizontal)
                 
@@ -93,22 +95,24 @@ struct CategorySettingView: View {
         }
 
         self.isAnimating = true
-
-        CategoryService().fetchCategoriesByUserId(userId: userId, authToken: token) { result in
-            switch result {
-            case .success(let fetchedCategories):
-                DispatchQueue.main.async {
-                    self.categories = fetchedCategories
-                    self.isAnimating = false
-                    print("Categories: \(self.categories)")
-                }
-            case .failure(let error):
-                print("Error fetching categories: \(error)")
-                DispatchQueue.main.async {
-                    self.isAnimating = false
+        DispatchQueue.global(qos: .background).async {
+            CategoryService().fetchCategoriesByUserId(userId: userId, authToken: token) { result in
+                switch result {
+                case .success(let fetchedCategories):
+                    DispatchQueue.main.async {
+                        self.categories = fetchedCategories
+                        self.isAnimating = false
+                        print("Categories: \(self.categories)")
+                    }
+                case .failure(let error):
+                    print("Error fetching categories: \(error)")
+                    DispatchQueue.main.async {
+                        self.isAnimating = false
+                    }
                 }
             }
         }
+        
     }
 }
 

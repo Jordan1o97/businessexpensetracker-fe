@@ -30,7 +30,7 @@ struct AddCategoryView: View {
         }
 
         CategoryService().createCategory(category: newCategory, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let category):
@@ -82,7 +82,7 @@ struct AddCategoryView: View {
                     Section {
                         HStack {
                             Text("Name: ")
-                            TextField("Name", text: $name)
+                            TextField("Building Supplies", text: $name)
                         }
                         HStack {
                             Text("Icon: ")

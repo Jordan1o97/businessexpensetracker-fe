@@ -193,7 +193,7 @@ struct SignInView: View {
                     email = UserDefaults.standard.string(forKey: "rememberedEmail") ?? "Email"
                 }
             }
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
     private func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)

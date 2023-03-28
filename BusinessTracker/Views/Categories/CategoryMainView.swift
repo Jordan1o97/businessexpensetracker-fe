@@ -93,7 +93,7 @@ struct CategoryMainView: View {
         CategoryService().fetchCategoriesByUserId(userId: userId, authToken: token) { result in
             switch result {
             case .success(let fetchedCategories):
-                DispatchQueue.main.async {
+                DispatchQueue.global(qos: .background).async {
                     self.categories = fetchedCategories
                     self.isAnimating = false
                     print("Categories: \(self.categories)")

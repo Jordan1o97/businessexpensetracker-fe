@@ -44,7 +44,7 @@ struct EditReceiptView: View {
         }
 
         ReceiptService().updateReceipt(receipt: updatedReceipt, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let message):
@@ -69,7 +69,7 @@ struct EditReceiptView: View {
         isLoading = true
         
         ClientService().fetchClientById(clientId: clientId, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let client):
@@ -90,7 +90,7 @@ struct EditReceiptView: View {
         isLoading = true
         
         CategoryService().fetchCategoryById(categoryId: categoryId, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let category):
@@ -141,37 +141,37 @@ struct EditReceiptView: View {
                         DatePicker("Date", selection: $date, displayedComponents: .date)
                         HStack {
                             Text("Initial Total:")
-                            TextField("Initial Total", text: $initialTotal)
+                            TextField("100.00", text: $initialTotal)
                                 .keyboardType(.decimalPad)
                         }
                         HStack {
                             Text("Tax:")
-                            TextField("Tax", text: $tax)
+                            TextField("15.00", text: $tax)
                                 .keyboardType(.decimalPad)
                         }
                         HStack {
                             Text("Tip:")
-                            TextField("Tip", text: $tip)
+                            TextField("10.00", text: $tip)
                                 .keyboardType(.decimalPad)
                         }
                         HStack {
                             Text("Payment Mode:")
-                            TextField("Payment Mode", text: $paymentMode)
+                            TextField("Debit", text: $paymentMode)
                         }
                         HStack {
                             Text("Description:")
-                            TextField("Description", text: $description)
+                            TextField("Dinner with Client", text: $description)
                         }
                         HStack {
                             Text("Status:")
-                            TextField("Status", text: $status)
+                            TextField("Paid", text: $status)
                         }
                         AdButton(onButtonAction: {
                             showCategoryMainView.toggle()
                         }) {
                             HStack {
                                 Text("Category:")
-                                Text(category.name.isEmpty ? "Category" : "\(category.name)")
+                                Text(category.name.isEmpty ? "Food & Entertainment" : "\(category.name)")
                                     .foregroundColor(category.name.isEmpty ? .gray : .primary)
                                 Spacer()
                             }
@@ -184,7 +184,7 @@ struct EditReceiptView: View {
                         }) {
                             HStack {
                                 Text("Client:")
-                                Text(clientId.name.isEmpty ? "Client" : "\(clientId.name)")
+                                Text(clientId.name.isEmpty ? "Apple" : "\(clientId.name)")
                                     .foregroundColor(clientId.name.isEmpty ? .gray : .primary)
                                 Spacer()
                             }

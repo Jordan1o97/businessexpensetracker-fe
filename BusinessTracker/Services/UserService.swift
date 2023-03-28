@@ -218,4 +218,93 @@ class UserServie {
         }.resume()
     }
     
+    func deleteUser(userId: String, authToken: String, completion: @escaping (Result<Int, Error>) -> Void) {
+            let urlString = "\(baseUrlString)/users/\(userId)"
+            
+            guard let url = URL(string: urlString) else {
+                completion(.failure(NetworkError.invalidUrl))
+                return
+            }
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+            request.setValue("\(authToken)", forHTTPHeaderField: "Authorization")
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                guard error == nil else {
+                    completion(.failure(error!))
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    completion(.failure(NetworkError.invalidResponse))
+                    return
+                }
+                
+                completion(.success(httpResponse.statusCode))
+                
+            }.resume()
+        }
+    
+    func validateReceipt(receiptData: Data, completion: @escaping (Result<Date?, Error>) -> Void) {
+        let url = URL(string: "\(baseUrlString)/validateReceipt")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+
+        let receiptDataString = receiptData.base64EncodedString()
+        print("📛", "\(receiptDataString)")
+        let jsonBody: [String: Any] = ["receiptData": receiptDataString]
+        let jsonData = try? JSONSerialization.data(withJSONObject: jsonBody, options: [])
+        request.httpBody = jsonData
+
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                // Handle network error
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+                return
+            }
+
+            guard let data = data else {
+                // Handle missing data error
+                DispatchQueue.main.async {
+                    completion(.failure(NSError(domain: "MissingData", code: -1, userInfo: nil)))
+                }
+                return
+            }
+
+            do {
+                // Parse the response JSON
+                let json = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                let success = json["success"] as! Bool
+                let expiryDateString = json["expiry_date"] as? String
+
+                // Convert the expiry date string to a Date object
+                let dateFormatter = ISO8601DateFormatter()
+                let expiryDate = expiryDateString != nil ? dateFormatter.date(from: expiryDateString!) : nil
+
+                if success {
+                    DispatchQueue.main.async {
+                        completion(.success(expiryDate))
+                    }
+                } else {
+                    // Handle server error
+                    DispatchQueue.main.async {
+                        completion(.failure(NSError(domain: "ServerError", code: -2, userInfo: nil)))
+                    }
+                }
+            } catch {
+                // Handle JSON parsing error
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+
+        task.resume()
+    }
+    
 }

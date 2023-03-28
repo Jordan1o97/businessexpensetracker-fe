@@ -30,7 +30,10 @@ enum NetworkServiceError: Error {
     case dataError
     case decodeError
 }
-let baseUrlString = "http://138.197.140.143:1097"
+
+let dev = "http://192.168.0.148:3000";
+let prod = "http://138.197.140.143:3000";
+let baseUrlString = prod;
 
 
 

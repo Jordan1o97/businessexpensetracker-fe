@@ -85,14 +85,14 @@ struct ClientMainView: View {
         ClientService().fetchClientsByUserId(userId: userId, authToken: token) { result in
             switch result {
             case .success(let fetchedClients):
-                DispatchQueue.main.async {
+                DispatchQueue.global(qos: .background).async {
                     self.clients = fetchedClients
                     self.isAnimating = false
                     print("Clients: \(self.clients)")
                 }
             case .failure(let error):
                 print("Error fetching clients: \(error)")
-                DispatchQueue.main.async {
+                DispatchQueue.global(qos: .background).async {
                     self.isAnimating = false
                 }
             }

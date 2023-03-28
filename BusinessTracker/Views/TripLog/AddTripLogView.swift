@@ -44,7 +44,7 @@ struct AddTripLogView: View {
         }
         
         TriplogService().createTripLog(tripLog: newTripLog, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let message):
@@ -100,7 +100,7 @@ struct AddTripLogView: View {
                         }
                         HStack {
                             Text("Expense:")
-                            TextField("Expense", text: $expense)
+                            TextField("100.00", text: $expense)
                                 .keyboardType(.numberPad)
                         }
                         HStack {
@@ -115,25 +115,25 @@ struct AddTripLogView: View {
                         }
                         HStack {
                             Text("Rate:")
-                            TextField("Rate", text: $rate)
+                            TextField("1.50", text: $rate)
                                 .keyboardType(.numberPad)
                         }
                         HStack {
                             Text("Total:")
-                            TextField("Total", text: $total)
+                            TextField("225.00", text: $total)
                                 .keyboardType(.numberPad)
                         }
                         HStack {
                             Text("Origin:")
-                            TextField("Origin", text: $origin)
+                            TextField("Halifax, NS", text: $origin)
                         }
                         HStack {
                             Text("Destination:")
-                            TextField("Destination", text: $destination)
+                            TextField("Toronto, ON", text: $destination)
                         }
                         HStack {
                             Text("Notes:")
-                            TextField("Notes", text: $notes)
+                            TextField("Very Sceneic Drive", text: $notes)
                         }
                     }
                     Section {
@@ -142,7 +142,7 @@ struct AddTripLogView: View {
                             AdButton(onButtonAction: {
                                 showClientMainView.toggle()
                             }) {
-                                Text(clientId.name.isEmpty ? "Select Client" : "\(clientId.name)")
+                                Text(clientId.name.isEmpty ? "Apple" : "\(clientId.name)")
                                     .foregroundColor(clientId.name.isEmpty ? .gray : .primary)
                             }
                             .sheet(isPresented: $showClientMainView) {
@@ -155,7 +155,7 @@ struct AddTripLogView: View {
                             AdButton(onButtonAction: {
                                 showVehicleMainView.toggle()
                             }) {
-                                Text(vehicleId.name.isEmpty ? "Select Vehicle" : "\(vehicleId.name)")
+                                Text(vehicleId.name.isEmpty ? "Ford F150" : "\(vehicleId.name)")
                                     .foregroundColor(vehicleId.name.isEmpty ? .gray : .primary)
                             }
                             .sheet(isPresented: $showVehicleMainView) {

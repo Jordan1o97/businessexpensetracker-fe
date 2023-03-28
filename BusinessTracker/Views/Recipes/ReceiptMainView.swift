@@ -37,7 +37,7 @@ struct ReceiptMainView: View {
             return [Data()]
         }
     }
-
+    
     var body: some View {
         ZStack {
             Color(.systemGray6).edgesIgnoringSafeArea(.all) // Set the background grey color
@@ -48,16 +48,16 @@ struct ReceiptMainView: View {
                         .font(.system(size: 20, weight: .semibold))
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(.leading, 85)
-
+                    
                     Spacer()
                     AdButton(onButtonAction: {
                         exportReceiptsPDF()
-//                        isAnimating = true;
+                        //                        isAnimating = true;
                     }) {
                         Image(systemName: "square.and.arrow.up")
                             .resizable()
                             .foregroundColor(.black)
-                            .frame(width: 24, height: 24)
+                            .frame(width: 18, height: 24)
                     }
                     .padding(.trailing, 10)
                     .sheet(isPresented: $showPDFPreview) {
@@ -81,7 +81,7 @@ struct ReceiptMainView: View {
                     }
                 }
                 .padding(.horizontal)
-
+                
                 FilterBarView(filterTitles: filterTitles, selectedFilter: $selectedFilter)
                     .frame(width: UIScreen.main.bounds.width, height: 50)
                     .padding(.top, 16)
@@ -94,9 +94,9 @@ struct ReceiptMainView: View {
                         Text("Total:")
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.white)
-
+                        
                         Spacer()
-
+                        
                         Text(String(format: "%.2f", total))
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.white)
@@ -108,7 +108,7 @@ struct ReceiptMainView: View {
                 .background(Color(#colorLiteral(red: 0.231372549, green: 0.4470588235, blue: 0.9294117647, alpha: 0.8)))
                 .cornerRadius(20)
                 .padding(.top, 16)
-
+                
                 ScrollView {
                     VStack {
                         ForEach(groupedReceipts, id: \.0) { group in
@@ -159,28 +159,33 @@ struct ReceiptMainView: View {
             print("User ID not found")
             return
         }
-
+        
         guard let token = getToken() else {
             print("Token not found")
             return
         }
-        isAnimating = true
-        cancellable = ReceiptService().fetchReceiptsPDF(userId: userId, authToken: token)
-            .receive(on: DispatchQueue.main) // Make sure to receive the value on the main thread
-            .sink { completion in
-                isAnimating = false
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print("Error fetching PDF data: \(error)")
+        DispatchQueue.main.async {
+            isAnimating = true
+        }
+        DispatchQueue.global(qos: .background).async {
+            cancellable = ReceiptService().fetchReceiptsPDF(userId: userId, authToken: token)
+                .receive(on: DispatchQueue.main) // Make sure to receive the value on the main thread
+                .sink { completion in
+                    isAnimating = false
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        print("Error fetching PDF data: \(error)")
+                    }
+                } receiveValue: { data in
+                    print("Received PDF data")
+                    self.pdfData = data
+                    self.showPDFPreview = true
+                    self.isAnimating = false
                 }
-            } receiveValue: { data in
-                print("Received PDF data")
-                self.pdfData = data
-                self.showPDFPreview = true
-                self.isAnimating = false
-            }
+        }
+        
     }
     
     func getGroupHeader(group: (String, [Receipt])) -> String {
@@ -205,19 +210,19 @@ struct ReceiptMainView: View {
             print("Token not found")
             return
         }
-        
         self.isAnimating = true
-
-        ReceiptService().fetchTotalReceiptsByUserId(userId: userId, authToken: token) { result in
-            switch result {
-            case .success(let (total)):
-                DispatchQueue.main.async {
-                    self.total = total
-                }
-            case .failure(let error):
-                print("Error fetching receipt total: \(error)")
-                DispatchQueue.main.async {
-                    self.isAnimating = false
+        DispatchQueue.global(qos: .background).async {
+            ReceiptService().fetchTotalReceiptsByUserId(userId: userId, authToken: token) { result in
+                switch result {
+                case .success(let (total)):
+                    DispatchQueue.main.async {
+                        self.total = total
+                    }
+                case .failure(let error):
+                    print("Error fetching receipt total: \(error)")
+                    DispatchQueue.main.async {
+                        self.isAnimating = false
+                    }
                 }
             }
         }
@@ -229,18 +234,20 @@ struct ReceiptMainView: View {
             print("User ID not found")
             return
         }
-        
+
         guard let token = getToken() else {
             print("Token not found")
             return
         }
-        
-        self.isAnimating = true
 
-        ReceiptService().fetchFilteredReceiptClientsAndCategories(userId: userId, authToken: token, selectedFilter: selectedFilter) { result in
-            switch result {
-            case .success(let (groupedReceipts, clientNames, categoryNames)):
-                DispatchQueue.main.async {
+        DispatchQueue.main.async {
+            self.isAnimating = true
+        }
+
+        DispatchQueue.global(qos: .background).async {
+            ReceiptService().fetchFilteredReceiptClientsAndCategories(userId: userId, authToken: token, selectedFilter: selectedFilter) { result in
+                switch result {
+                case .success(let (groupedReceipts, clientNames, categoryNames)):
                     let sortedGroupedReceipts = groupedReceipts.map { (key, receipts) -> (String, [Receipt]) in
                         if selectedFilter == 1 || selectedFilter == 2 || selectedFilter == 3 {
                             let sortedReceipts = receipts.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
@@ -249,17 +256,21 @@ struct ReceiptMainView: View {
                             return (key, receipts)
                         }
                     }
-                    self.receipts = groupedReceipts.flatMap { $0.1 } // Flatten the array of receipts
-                    self.clientNames = clientNames
-                    self.categoryNames = categoryNames
-                    self.groupedReceipts = groupedReceipts
-                    fetchTotal();
-                    self.isAnimating = false
-                }
-            case .failure(let error):
-                print("Error fetching receipts, clients, and categories: \(error)")
-                DispatchQueue.main.async {
-                    self.isAnimating = false
+                    let flattenedReceipts = sortedGroupedReceipts.flatMap { $0.1 } // Flatten the array of receipts
+                    
+                    DispatchQueue.main.async {
+                        self.receipts = flattenedReceipts
+                        self.clientNames = clientNames
+                        self.categoryNames = categoryNames
+                        self.groupedReceipts = groupedReceipts
+                        fetchTotal();
+                        self.isAnimating = false
+                    }
+                case .failure(let error):
+                    print("Error fetching receipts, clients, and categories: \(error)")
+                    DispatchQueue.main.async {
+                        self.isAnimating = false
+                    }
                 }
             }
         }

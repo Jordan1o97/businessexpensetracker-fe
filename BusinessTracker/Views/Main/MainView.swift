@@ -11,6 +11,7 @@ struct MainView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var isPresentingScanner = true
     @State private var selectedView: ViewType = .receipts
+    @State private var showSubscriptionPrompt = false
     var body: some View {
         NavigationView {
             ZStack {
@@ -27,6 +28,17 @@ struct MainView: View {
             }.edgesIgnoringSafeArea(.all)
         }
         .navigationBarBackButtonHidden(true)
+        .navigationViewStyle(StackNavigationViewStyle())
+        .onAppear {
+            if UserDefaults.standard.bool(forKey: "subscriptionPromptShown") == false {
+                showSubscriptionPrompt = true
+                UserDefaults.standard.set(true, forKey: "subscriptionPromptShown")
+            }
+        }
+        .sheet(isPresented: $showSubscriptionPrompt) {
+            // Replace with your subscription prompt view
+            Text("Your Subscription Prompt View Here")
+        }
     }
     
     private func getView(for viewType: ViewType) -> some View {

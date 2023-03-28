@@ -42,7 +42,7 @@ struct EditTripLogView: View {
         }
 
         TriplogService().updateTripLog(tripLog: updatedTripLog, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let message):
@@ -66,7 +66,7 @@ struct EditTripLogView: View {
         isLoading = true
         
         ClientService().fetchClientById(clientId: clientId, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let client):
@@ -87,7 +87,7 @@ struct EditTripLogView: View {
         isLoading = true
         
         VehicleService().fetchVehicleById(vehicleId: vehicleId, authToken: token) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 isLoading = false
                 switch result {
                 case .success(let vehicle):
@@ -141,7 +141,7 @@ struct EditTripLogView: View {
                         }
                         HStack {
                             Text("Expense:")
-                            TextField("Expense", text: $expense)
+                            TextField("100.00", text: $expense)
                                 .keyboardType(.numberPad)
                         }
                         HStack {
@@ -156,25 +156,25 @@ struct EditTripLogView: View {
                         }
                         HStack {
                             Text("Rate:")
-                            TextField("Rate", text: $rate)
+                            TextField("1.50", text: $rate)
                                 .keyboardType(.numberPad)
                         }
                         HStack {
                             Text("Total:")
-                            TextField("Total", text: $total)
+                            TextField("225.00", text: $total)
                                 .keyboardType(.numberPad)
                         }
                         HStack {
                             Text("Origin:")
-                            TextField("Origin", text: $origin)
+                            TextField("Halifax, NS", text: $origin)
                         }
                         HStack {
                             Text("Destination:")
-                            TextField("Destination", text: $destination)
+                            TextField("Toronto, ON", text: $destination)
                         }
                         HStack {
                             Text("Notes:")
-                            TextField("Notes", text: $notes)
+                            TextField("Very Sceneic Drive", text: $notes)
                         }
                     }
                     Section {
@@ -183,7 +183,7 @@ struct EditTripLogView: View {
                             AdButton(onButtonAction: {
                                 showClientMainView.toggle()
                             }) {
-                                Text(client.name.isEmpty ? "Select Client" : "\(client.name)")
+                                Text(client.name.isEmpty ? "Apple" : "\(client.name)")
                                     .foregroundColor(client.name.isEmpty ? .gray : .primary)
                             }
                             .sheet(isPresented: $showClientMainView) {
@@ -196,7 +196,7 @@ struct EditTripLogView: View {
                             AdButton(onButtonAction: {
                                 showVehicleMainView.toggle()
                             }) {
-                                Text(vehicleId.name.isEmpty ? "Select Vehicle" : "\(vehicleId.name)")
+                                Text(vehicleId.name.isEmpty ? "Ford F150" : "\(vehicleId.name)")
                                     .foregroundColor(vehicleId.name.isEmpty ? .gray : .primary)
                             }
                             .sheet(isPresented: $showVehicleMainView) {
