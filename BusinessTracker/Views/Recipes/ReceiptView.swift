@@ -26,6 +26,8 @@ struct ReceiptView: View {
 
             Text("Status: \(receipt.status ?? "N/A")")
                 .font(.footnote)
+            Text("Payment Mode: \(receipt.paymentMode )")
+                .font(.footnote)
         }
         .padding()
         .background(Color.white)
