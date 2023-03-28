@@ -20,7 +20,7 @@ struct SettingsView: View {
     @State private var showSpinner = false
     @State private var showDeleteUserAlert = false
     @State private var showSubscriptionView = false
-
+    //This is my update for the branch
     
     var body: some View {
         VStack {
