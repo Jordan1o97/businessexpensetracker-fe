@@ -63,7 +63,13 @@ struct SettingsView: View {
                           primaryButton: .destructive(Text("Delete"), action: deleteUserAndLogout),
                           secondaryButton: .cancel())
                 }
-            settingsButton(title: "Logout", isPresented: $showSignIn, view: AnyView(SignInView()))
+            deleteUserButton(title: "Logout")
+                .alert(isPresented: $showDeleteUserAlert) {
+                    Alert(title: Text("Logout"),
+                          message: Text("Are you sure you want to log out?"),
+                          primaryButton: .destructive(Text("Logout"), action: logout),
+                          secondaryButton: .cancel())
+                }
         }
     }
 

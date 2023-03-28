@@ -40,7 +40,7 @@ struct CategorySettingView: View {
                         }
                         .padding(.trailing, 20) // Add custom padding to create a gap between the button and the right edge
                         .fullScreenCover(isPresented: $showAddCategoryView) {
-                            AddVehicleView(isPresented: $showAddCategoryView)
+                            AddCategoryView(isPresented: $showAddCategoryView)
                                 .onDisappear(perform: fetchCategories)
                         }
                     }
