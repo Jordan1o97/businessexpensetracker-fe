@@ -110,16 +110,27 @@ struct AddReceiptView: View {
                                 .keyboardType(.decimalPad)
                         }
                         HStack {
-                            Text("Payment Mode:")
-                            TextField("Debit", text: $paymentMode)
+                            Picker("Payment Mode", selection: $paymentMode) {
+                                Text("Debit").tag("Debit")
+                                Text("Credit").tag("Credit")
+                                Text("Cash").tag("Cash")
+                                Text("Check").tag("Check")
+                                Text("Bank Transfer").tag("Bank Transfer")
+                                Text("PayPal").tag("PayPal")
+                                Text("Venmo").tag("Venmo")
+                            }
+                            .pickerStyle(MenuPickerStyle())
                         }
                         HStack {
                             Text("Description:")
                             TextField("Dinner with Client", text: $description)
                         }
                         HStack {
-                            Text("Status:")
-                            TextField("Paid", text: $status)
+                            Picker("Status", selection: $status) {
+                                Text("Paid").tag("Paid")
+                                Text("Pending").tag("Pending")
+                            }
+                            .pickerStyle(MenuPickerStyle())
                         }
                         AdButton(onButtonAction: {
                             showCategoryMainView.toggle()
