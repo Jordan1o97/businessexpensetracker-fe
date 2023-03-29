@@ -13,8 +13,9 @@ struct EditTripLogView: View {
     
     @State private var date: Date = Date()
     @State private var expense: String = ""
-    @State private var start: String = ""
-    @State private var end: String = ""
+    @State private var start: Date = Date()
+    @State private var end: Date = Date()
+    @State private var totalHours: String = ""
     @State private var rate: String = ""
     @State private var total: String = ""
     @State private var origin: String = ""
@@ -34,7 +35,7 @@ struct EditTripLogView: View {
     func saveTripLog() {
         isLoading = true
         print(tripLog.id)
-        let updatedTripLog = TripLog(id: tripLog.id, date: date, expense: Double(expense) ?? 0.0, start: Double(start) ?? 0.0, end: Double(end) ?? 0.0, rate: Double(rate) ?? 0.0, total: Double(total) ?? 0.0, vehicle: vehicleId.id, origin: origin, destination: destination, clientId: client.id, notes: notes) // Replace userId with the actual userId
+        let updatedTripLog = TripLog(id: tripLog.id, date: date, expense: Double(expense) ?? 0.0, start: start, end: end, totalHours: Double(totalHours) ?? 0.0, rate: Double(rate) ?? 0.0, total: Double(total) ?? 0.0, vehicle: vehicleId.id, origin: origin, destination: destination, clientId: client.id, notes: notes) // Replace userId with the actual userId
         
         guard let token = getToken() else {
             print("Token not found")
@@ -146,12 +147,15 @@ struct EditTripLogView: View {
                         }
                         HStack {
                             Text("Start:")
-                            TextField("Start", text: $start)
-                                .keyboardType(.numberPad)
+                            DatePicker("Start", selection: $start, displayedComponents: [.date, .hourAndMinute])
                         }
                         HStack {
                             Text("End:")
-                            TextField("End", text: $end)
+                            DatePicker("End", selection: $end, displayedComponents: [.date, .hourAndMinute])
+                        }
+                        HStack {
+                            Text("totalHours:")
+                            TextField("8", text: $totalHours)
                                 .keyboardType(.numberPad)
                         }
                         HStack {
@@ -232,8 +236,9 @@ struct EditTripLogView: View {
         .onAppear() {
             self.date = tripLog.date
             self.expense = String(tripLog.expense)
-            self.start = String(tripLog.start)
-            self.end = String(tripLog.end)
+            self.start = tripLog.start
+            self.end = tripLog.end
+            self.totalHours = String(tripLog.totalHours)
             self.rate = String(tripLog.rate)
             self.total = String(tripLog.total)
             self.origin = tripLog.origin
@@ -249,8 +254,9 @@ struct EditTripLogView_Previews: PreviewProvider {
         let sampleTripLog = TripLog(id: "1a2b3c4d",
                                     date: Date(),
                                     expense: 100.0,
-                                    start: 2500,
-                                    end: 2700,
+                                    start: Date(),
+                                    end: Date(),
+                                    totalHours: 8,
                                     rate: 0.58,
                                     total: 116.0,
                                     vehicle: "Car",

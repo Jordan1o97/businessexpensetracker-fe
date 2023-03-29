@@ -86,11 +86,11 @@ struct AddJobView: View {
                     Section {
                         HStack {
                             Text("Start:")
-                            DatePicker("Start", selection: $start, displayedComponents: .date)
+                            DatePicker("Start", selection: $start, displayedComponents: [.date, .hourAndMinute])
                         }
                         HStack {
                             Text("End:")
-                            DatePicker("End", selection: $end, displayedComponents: .date)
+                            DatePicker("End", selection: $end, displayedComponents: [.date, .hourAndMinute])
                         }
                         HStack {
                             Text("Income:")
