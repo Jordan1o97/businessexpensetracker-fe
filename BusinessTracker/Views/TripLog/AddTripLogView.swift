@@ -12,8 +12,9 @@ struct AddTripLogView: View {
 
     @State private var date: Date = Date()
     @State private var expense: String = ""
-    @State private var start: String = ""
-    @State private var end: String = ""
+    @State private var start: Date = Date()
+    @State private var end: Date = Date()
+    @State private var totalHours: String = ""
     @State private var rate: String = ""
     @State private var total: String = ""
     @State private var origin: String = ""
@@ -36,7 +37,7 @@ struct AddTripLogView: View {
         isLoading = true
         
         let tripLogId = UUID().uuidString; // Replace with the existing trip log ID when in edit mode
-        let newTripLog = TripLog(id: tripLogId, date: date, expense: Double(expense) ?? 0.0, start: Double(start) ?? 0.0, end: Double(end) ?? 0.0, rate: Double(rate) ?? 0.0, total: Double(total) ?? 0.0, vehicle: destination, origin: origin, destination: clientId.id, clientId: vehicleId.id, notes: notes) // Replace userId with the actual userId
+        let newTripLog = TripLog(id: tripLogId, date: date, expense: Double(expense) ?? 0.0, start: start, end: end, totalHours: Double(totalHours) ?? 0.0, rate: Double(rate) ?? 0.0, total: Double(total) ?? 0.0, vehicle: vehicleId.id, origin: origin, destination: destination, clientId: clientId.id, notes: notes) // Replace userId with the actual userId
         
         guard let token = getToken() else {
             print("Token not found")
@@ -105,12 +106,15 @@ struct AddTripLogView: View {
                         }
                         HStack {
                             Text("Start:")
-                            TextField("Start", text: $start)
-                                .keyboardType(.numberPad)
+                            DatePicker("Start", selection: $start, displayedComponents: [.date, .hourAndMinute])
                         }
                         HStack {
                             Text("End:")
-                            TextField("End", text: $end)
+                            DatePicker("End", selection: $end, displayedComponents: [.date, .hourAndMinute])
+                        }
+                        HStack {
+                            Text("totalHours:")
+                            TextField("8", text: $totalHours)
                                 .keyboardType(.numberPad)
                         }
                         HStack {

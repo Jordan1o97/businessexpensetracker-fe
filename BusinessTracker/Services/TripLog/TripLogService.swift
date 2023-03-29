@@ -11,8 +11,9 @@ struct TripLog: Codable, Identifiable {
     let id: String
     let date: Date
     let expense: Double
-    let start: Double
-    let end: Double
+    let start: Date
+    let end: Date
+    let totalHours: Double
     let rate: Double
     let total: Double
     let vehicle: String

@@ -33,7 +33,7 @@ enum NetworkServiceError: Error {
 
 let dev = "http://192.168.0.148:3000";
 let prod = "http://138.197.140.143:3000";
-let baseUrlString = prod;
+let baseUrlString = dev;
 
 
 
