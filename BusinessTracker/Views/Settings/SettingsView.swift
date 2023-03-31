@@ -71,6 +71,7 @@ struct SettingsView: View {
                           secondaryButton: .cancel())
                 }
         }
+        .fullScreenCover(isPresented: $showSignIn, content: { SignInView() })
     }
 
     private func settingsButton(title: String, isPresented: Binding<Bool>, view: AnyView) -> some View {
@@ -118,6 +119,7 @@ struct SettingsView: View {
         UserDefaults.standard.removeObject(forKey: "token")
         UserDefaults.standard.set(false, forKey: "rememberMe")
         subscriptionManager.stopCheckingSubscription()
+        self.showSignIn = true;
     }
     
     func deleteUserAndLogout() {

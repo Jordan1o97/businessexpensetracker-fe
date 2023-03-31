@@ -17,10 +17,15 @@ struct CategoryView: View {
                     .font(.headline)
             }
             Spacer()
-//            Image(systemName: category.icon)
-//                .resizable()
-//                .frame(width: 24, height: 24)
-//                .foregroundColor(.gray)
+            AsyncImage(url: URL(string: category.icon)) { image in
+                image
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                    .foregroundColor(.gray)
+            } placeholder: {
+                ProgressView()
+            }
         }
         .padding()
         .background(Color.white)

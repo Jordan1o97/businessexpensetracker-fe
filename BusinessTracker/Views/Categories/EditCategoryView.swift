@@ -13,6 +13,8 @@ struct EditCategoryView: View {
 
     @State private var name: String = ""
     @State private var icon: String = ""
+    @State private var image: UIImage?
+    @State private var showImagePicker: Bool = false
     @State private var isLoading: Bool = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
 
@@ -61,10 +63,28 @@ struct EditCategoryView: View {
                             TextField("Building Supplies", text: $name)
                         }
                         HStack {
-                            Text("Icon: ")
-                            TextField("Icon", text: $icon)
+                            Text("Image: ")
+                            if let image = image {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100, height: 100)
+                            } else {
+                                Image(systemName: "photo")
+                                    .foregroundColor(.gray)
+                                    .frame(width: 100, height: 100)
+                            }
+                            Spacer()
+                            Button(action: {
+                                showImagePicker.toggle()
+                            }) {
+                                Text("Choose Image")
+                            }
                         }
                     }
+                }
+                .sheet(isPresented: $showImagePicker) {
+                    ImagePicker(image: $image, isPresented: $showImagePicker)
                 }
 
                 Spacer()

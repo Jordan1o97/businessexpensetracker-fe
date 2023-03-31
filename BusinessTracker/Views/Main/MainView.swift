@@ -36,8 +36,7 @@ struct MainView: View {
             }
         }
         .sheet(isPresented: $showSubscriptionPrompt) {
-            // Replace with your subscription prompt view
-            Text("Your Subscription Prompt View Here")
+            SubscriptionPromptView(isPresented: $showSubscriptionPrompt);
         }
     }
     

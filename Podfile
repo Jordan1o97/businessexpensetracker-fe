@@ -7,6 +7,9 @@ target 'BusinessTracker' do
 
   # Add the Google Mobile Ads SDK
   pod 'Google-Mobile-Ads-SDK'
+  
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Storage'
 
   # Pods for BusinessTracker
 

@@ -17,8 +17,7 @@ struct CategoryMainView: View {
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
     
     var body: some View {
-        ZStack {
-            Color(.systemGray6).edgesIgnoringSafeArea(.all) // Set the background grey color
+        VStack {
             VStack {
                 BannerContainerView()
                 HStack {
@@ -46,7 +45,7 @@ struct CategoryMainView: View {
                 .padding(.horizontal)
                 
                 ScrollView {
-                    VStack {
+                    LazyVStack {
                         ForEach(categories, id: \.id) { category in
                             AdButton(onButtonAction: {
                                 selectedCategory = (name: category.name, id: category.id)
@@ -74,7 +73,7 @@ struct CategoryMainView: View {
                     .background(Color.white)
                     .cornerRadius(8)
             }
-        }
+        }.background(Color(.systemGray6).edgesIgnoringSafeArea(.all))
     }
 
     func fetchCategories() {
@@ -89,11 +88,10 @@ struct CategoryMainView: View {
         }
 
         self.isAnimating = true
-
         CategoryService().fetchCategoriesByUserId(userId: userId, authToken: token) { result in
             switch result {
             case .success(let fetchedCategories):
-                DispatchQueue.global(qos: .background).async {
+                DispatchQueue.main.async {
                     self.categories = fetchedCategories
                     self.isAnimating = false
                     print("Categories: \(self.categories)")

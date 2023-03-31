@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Firebase
+import FirebaseStorage
 
 struct TripLog: Codable, Identifiable {
     let id: String

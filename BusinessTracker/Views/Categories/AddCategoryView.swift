@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseStorage
 
 struct AddCategoryView: View {
     @Binding var isPresented: Bool
 
     @State private var name: String = ""
     @State private var icon: String = ""
+    @State private var image: UIImage?
+    @State private var showImagePicker: Bool = false
     @State private var isLoading: Bool = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
 
@@ -22,24 +26,41 @@ struct AddCategoryView: View {
     func createCategory() {
         isLoading = true
 
-        let newCategory = Category(name: name, icon: icon, id: UUID().uuidString)
-
-        guard let token = getToken() else {
-            print("Token not found")
+        guard let image = image else {
+            print("No image selected")
+            isLoading = false
             return
         }
 
-        CategoryService().createCategory(category: newCategory, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let category):
-                    print("Category saved: \(category)")
-                    isPresented = false
-                case .failure(let error):
-                    print("Error saving category: \(error)")
-                    isPresented = false
+        uploadImageToFirebaseStorage(image: image) { result in
+            switch result {
+            case .success(let imageURL):
+                
+                let newCategory = Category(name: name, icon: imageURL, id: UUID().uuidString)
+
+                guard let token = getToken() else {
+                    print("Token not found")
+                    return
                 }
+
+                CategoryService().createCategory(category: newCategory, authToken: token) { result in
+                    DispatchQueue.global(qos: .background).async {
+                        isLoading = false
+                        switch result {
+                        case .success(let category):
+                            print("Category saved: \(category)")
+                            isPresented = false
+                        case .failure(let error):
+                            print("Error saving category: \(error)")
+                            isPresented = false
+                        }
+                    }
+                }
+
+            case .failure(let error):
+                print("Error uploading image: \(error)")
+                isPresented = false
+                isLoading = false
             }
         }
     }
@@ -85,10 +106,28 @@ struct AddCategoryView: View {
                             TextField("Building Supplies", text: $name)
                         }
                         HStack {
-                            Text("Icon: ")
-                            TextField("Icon", text: $icon)
+                            Text("Image: ")
+                            if let image = image {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100, height: 100)
+                            } else {
+                                Image(systemName: "photo")
+                                    .foregroundColor(.gray)
+                                    .frame(width: 100, height: 100)
+                            }
+                            Spacer()
+                            Button(action: {
+                                showImagePicker.toggle()
+                            }) {
+                                Text("Choose Image")
+                            }
                         }
                     }
+                }
+                .sheet(isPresented: $showImagePicker) {
+                    ImagePicker(image: $image, isPresented: $showImagePicker)
                 }
 
                 Spacer()
@@ -115,6 +154,46 @@ struct AddCategoryView: View {
                 }
         )
     }
+    
+    func uploadImageToFirebaseStorage(image: UIImage, completion: @escaping (Result<String, Error>) -> Void) {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to convert image to JPEG data"])))
+            return
+        }
+
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        let imageName = UUID().uuidString
+        let imageRef = storageRef.child("category_images/\(imageName).jpg")
+
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpeg"
+
+        let uploadTask = imageRef.putData(imageData, metadata: metadata) { metadata, error in
+            if let error = error {
+                print("⚠️", "Api Error \(error)")
+                completion(.failure(error))
+                return
+            }
+
+            imageRef.downloadURL { url, error in
+                if let error = error {
+                    print("⚠️", "Image Error \(error)")
+                    completion(.failure(error))
+                    return
+                }
+
+                if let url = url {
+                    print("💯", "Image Success")
+                    completion(.success(url.absoluteString))
+                } else {
+                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to get download URL"])))
+                    print("📛", "Error no URL")
+                }
+            }
+        }
+    }
+    
 }
 
 struct AddCategoryView_Previews: PreviewProvider {
