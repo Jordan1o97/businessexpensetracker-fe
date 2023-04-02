@@ -4,6 +4,7 @@ struct TripLogView: View {
     var tripLog: TripLog
     var clientName: String
     var vehicleName: String
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -33,7 +34,7 @@ struct TripLogView: View {
 
         }
         .padding()
-        .background(Color.white)
+        .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
         .cornerRadius(10)
     }
 }

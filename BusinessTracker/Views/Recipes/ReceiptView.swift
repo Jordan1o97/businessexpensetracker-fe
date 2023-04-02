@@ -5,6 +5,8 @@ struct ReceiptView: View {
     var clientName: String
     var categoryName: String
 
+    @Environment(\.colorScheme) var colorScheme
+
     var body: some View {
         VStack(alignment: .leading) {
             Text("Total: $\(receipt.initalTotal + receipt.tip + receipt.tax, specifier: "%.2f")")
@@ -30,7 +32,7 @@ struct ReceiptView: View {
                 .font(.footnote)
         }
         .padding()
-        .background(Color.white)
+        .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
         .cornerRadius(10)
     }
 }

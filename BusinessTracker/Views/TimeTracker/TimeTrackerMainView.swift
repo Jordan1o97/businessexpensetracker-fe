@@ -9,6 +9,7 @@ struct TimeTrackerMainView: View {
     @State private var groupedJobs: [(String, [Job])] = []
     @State private var isEditViewPresented = false
     @State private var selectedJob: Job?
+    @Environment(\.colorScheme) var colorScheme
     
     private let filterTitles = ["Day", "Month", "Year", "Job", "Client"]
     
@@ -30,7 +31,7 @@ struct TimeTrackerMainView: View {
                     }) {
                         Image(systemName: "plus")
                             .resizable()
-                            .foregroundColor(.black)
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
                             .frame(width: 24, height: 24)
                     }
                     .padding(.trailing, 20) // Add custom padding to create a gap between the button and the right edge
@@ -63,11 +64,11 @@ struct TimeTrackerMainView: View {
                                     }) {
                                         JobView(job: job, clientName: clientName)
                                             .padding(.horizontal)
-                                            .background(Color.white)
+                                            .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
                                             .cornerRadius(10)
                                             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
                                             .padding(.bottom, 10)
-                                            .foregroundColor(.black) // Keep the text color black
+                                            .foregroundColor(colorScheme == .dark ? .white : .black)
                                     }
                                 }
                             }

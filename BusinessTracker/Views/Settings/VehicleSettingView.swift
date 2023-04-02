@@ -16,6 +16,7 @@ struct VehicleSettingView: View {
     @State private var vehicles: [Vehicle] = []
     @State private var isAnimating: Bool = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         ZStack {
@@ -35,7 +36,7 @@ struct VehicleSettingView: View {
                     }) {
                         Image(systemName: "plus")
                             .resizable()
-                            .foregroundColor(.black)
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
                             .frame(width: 24, height: 24)
                     }
                     .padding(.trailing, 20) // Add custom padding to create a gap between the button and the right edge
@@ -50,25 +51,23 @@ struct VehicleSettingView: View {
                     VStack {
                         ForEach(vehicles) { vehicle in
                             AdButton(onButtonAction: {
+                                showEditVehicleView.toggle()
                                 selectedVehicle = vehicle
                             }) {
                                 VehicleView(vehicle: vehicle)
                                     .padding(.horizontal)
-                                    .background(Color.white)
+                                    .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
                                     .cornerRadius(10)
                                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
                                     .padding(.bottom, 10)
-                                    .foregroundColor(.black) // Keep the text color black
+                                    .foregroundColor(colorScheme == .dark ? .white : .black)
                             }
                         }
                     }
                 }
                 .padding(.top)
                 .frame(width: UIScreen.main.bounds.width * 0.90)
-                .fullScreenCover(isPresented: Binding(get: { showEditVehicleView }, set: { showEditVehicleView = $0 })) {
-                    EditVehicleView(isPresented: Binding(get: { showEditVehicleView }, set: { showEditVehicleView = $0 }), vehicle: selectedVehicle!)
-                        .onDisappear(perform: fetchVehicles)
-                }
+                .fullScreenCover(isPresented: $showEditVehicleView, content: { EditVehicleView(isPresented: $showEditVehicleView, vehicle: selectedVehicle!) })
                 .onAppear(perform: fetchVehicles)
             }
             if isAnimating {

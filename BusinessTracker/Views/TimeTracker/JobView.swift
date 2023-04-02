@@ -3,6 +3,7 @@ import SwiftUI
 struct JobView: View {
     var job: Job
     var clientName: String
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -28,7 +29,7 @@ struct JobView: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
         .cornerRadius(10)
     }
 }

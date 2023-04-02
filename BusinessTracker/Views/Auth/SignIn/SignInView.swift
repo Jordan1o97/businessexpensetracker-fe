@@ -162,7 +162,7 @@ struct SignInView: View {
                                 .foregroundColor(.blue)
                         }
                         .fullScreenCover(isPresented: $isSignUpViewShowing) {
-                            SignUpView(isPresented: $isSignUpViewShowing)
+                            SignUpView(isPresented: $isSignUpViewShowing, email: $email, password: $password)
                         }
                         Spacer()
                     }

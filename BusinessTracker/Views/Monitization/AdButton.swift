@@ -10,7 +10,7 @@ import SwiftUI
 struct AdButton<Content: View>: View {
     var onButtonAction: () -> Void
     let content: () -> Content
-    let probabilityToShowAd = 0.6
+    let probabilityToShowAd = 0.3
 
     @State private var adController = InterstitialAdController()
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")

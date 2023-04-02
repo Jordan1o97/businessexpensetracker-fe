@@ -9,6 +9,7 @@ import SwiftUI
 
 struct VehicleView: View {
     var vehicle: Vehicle
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -20,7 +21,7 @@ struct VehicleView: View {
             // Add extra data here in the future
         }
         .padding()
-        .background(Color.white)
+        .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
         .cornerRadius(10)
     }
 }

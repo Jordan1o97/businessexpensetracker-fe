@@ -12,10 +12,12 @@ struct MainView: View {
     @State private var isPresentingScanner = true
     @State private var selectedView: ViewType = .receipts
     @State private var showSubscriptionPrompt = false
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
         NavigationView {
             ZStack {
-                Color.white
+                colorScheme == .dark ? Color(.systemGray5) : Color.white
                 VStack {
                     Spacer()
                     getView(for: selectedView)
@@ -23,7 +25,7 @@ struct MainView: View {
                     
                     
                     BottomBarView(activeTab: $selectedView)
-                        .background(Color.white)
+                        .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
                 }
             }.edgesIgnoringSafeArea(.all)
         }

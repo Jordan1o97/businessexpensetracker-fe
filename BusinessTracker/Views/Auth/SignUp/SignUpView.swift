@@ -9,19 +9,19 @@ import SwiftUI
 
 
 struct SignUpView: View {
+    @Binding var isPresented: Bool
     @State private var companyName = "Company Name"
     @State private var name = "Name"
-    @State private var email = "Email"
+    @Binding var email: String;
     @FocusState private var isCompanyNameFieldFocused: Bool
     @FocusState private var isNameFieldFocused: Bool
     @FocusState private var isEmailFieldFocused: Bool
-    @State private var password = ""
+    @Binding var password: String;
     @State private var rememberMe = true 
     @State private var showPassword = false
     @State private var signUpButtonState: CustomButtonState = .normal
     @State private var showSpinner = false
     @State private var errorMessage: String = ""
-    @Binding var isPresented: Bool
 
     var body: some View {
         ZStack() {
@@ -217,8 +217,8 @@ struct CheckboxToggleStyle: ToggleStyle {
     }
 }
 
-struct SignUnView_Previews: PreviewProvider {
-    static var previews: some View {
-        SignUpView(isPresented: .constant(true))
-    }
-}
+//struct SignUnView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SignUpView(isPresented: .constant(true))
+//    }
+//}

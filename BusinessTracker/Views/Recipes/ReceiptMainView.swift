@@ -26,6 +26,7 @@ struct ReceiptMainView: View {
     @State private var showPDFPreview = false
     @State private var cancellable: AnyCancellable?
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @Environment(\.colorScheme) var colorScheme
     
     private let filterTitles = ["Day", "Month", "Year", "Category", "Client"]
     private var activityItems: [Any] {
@@ -56,7 +57,7 @@ struct ReceiptMainView: View {
                     }) {
                         Image(systemName: "square.and.arrow.up")
                             .resizable()
-                            .foregroundColor(.black)
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
                             .frame(width: 18, height: 24)
                     }
                     .padding(.trailing, 10)
@@ -70,7 +71,7 @@ struct ReceiptMainView: View {
                     }) {
                         Image(systemName: "plus")
                             .resizable()
-                            .foregroundColor(.black)
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
                             .frame(width: 24, height: 24)
                     }
                     .padding(.trailing, 20) // Add custom padding to create a gap between the button and the right edge
@@ -125,11 +126,11 @@ struct ReceiptMainView: View {
                                     }) {
                                         ReceiptView(receipt: receipt, clientName: clientName, categoryName: categoryName)
                                             .padding(.horizontal)
-                                            .background(Color.white)
+                                            .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
                                             .cornerRadius(10)
                                             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
                                             .padding(.bottom, 10)
-                                            .foregroundColor(.black) // Keep the text color black
+                                            .foregroundColor(colorScheme == .dark ? .white : .black)
                                     }
                                 }
                             }

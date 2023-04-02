@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CategoryView: View {
     var category: Category
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         HStack {
@@ -28,7 +29,7 @@ struct CategoryView: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
         .cornerRadius(10)
     }
 }

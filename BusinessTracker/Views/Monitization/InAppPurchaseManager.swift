@@ -36,17 +36,15 @@ class InAppPurchaseManager: NSObject, ObservableObject, SKProductsRequestDelegat
     }
     
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        DispatchQueue.global(qos: .background).async {
-            if let product = response.products.first{
-                self.subscriptionProduct = product
-                print("⚠️", "\(self.subscriptionProduct ) Product in question")
-            } else {
-                print("No products found")
-            }
-            
-            if !response.invalidProductIdentifiers.isEmpty {
-                print("Invalid product identifiers: \(response.invalidProductIdentifiers)")
-            }
+        if let product = response.products.first{
+            self.subscriptionProduct = product
+            print("⚠️", "\(self.subscriptionProduct ) Product in question")
+        } else {
+            print("No products found")
+        }
+        
+        if !response.invalidProductIdentifiers.isEmpty {
+            print("Invalid product identifiers: \(response.invalidProductIdentifiers)")
         }
     }
     

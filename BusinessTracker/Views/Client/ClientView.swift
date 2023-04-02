@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ClientView: View {
     var client: Client
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -26,7 +27,7 @@ struct ClientView: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
         .cornerRadius(10)
     }
 }

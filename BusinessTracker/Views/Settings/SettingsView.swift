@@ -20,6 +20,7 @@ struct SettingsView: View {
     @State private var showSpinner = false
     @State private var showDeleteUserAlert = false
     @State private var showSubscriptionView = false
+    @Environment(\.colorScheme) var colorScheme
     //This is my update for the branch
     
     var body: some View {
@@ -110,6 +111,7 @@ struct SettingsView: View {
             Spacer()
             Text("Settings")
                 .font(.system(size: 22, weight: .bold))
+                .background(colorScheme == .dark ? .white : .black)
             Spacer()
         }
     }

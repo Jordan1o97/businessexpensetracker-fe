@@ -17,6 +17,16 @@ struct BottomBarView: View {
     @State private var scannedReceiptData: [String: Any] = [:]
     let documentCameraDelegate = DocumentCameraDelegate()
     
+    @Environment(\.colorScheme) var colorScheme
+
+    private func rootView() -> UIViewController? {
+        guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else {
+            return nil
+        }
+
+        return scene.windows.first?.rootViewController
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             Divider()
@@ -43,11 +53,11 @@ struct BottomBarView: View {
                 }.padding(.bottom, 20)
             }
             .frame(minWidth: 400, minHeight: 75, maxHeight: 100)
-            .background(Color.white)
+            .background(colorScheme == .dark ? Color(.systemGray6) : Color.white)
             .padding(.horizontal)
             .cornerRadius(22.5)
         }
-        .background(Color(red: 0.97, green: 0.97, blue: 0.97))
+        .background(colorScheme == .dark ? Color(.systemGray4) : Color(red: 0.97, green: 0.97, blue: 0.97))
         .overlay(
             Button(action: {
                 let scannerViewController = VNDocumentCameraViewController()
@@ -58,7 +68,7 @@ struct BottomBarView: View {
                     self.isPresentingScanner.toggle() //dismiss scanner view
                     self.isPresentingAddReceiptView = true
                 }
-                UIApplication.shared.windows.first?.rootViewController?.present(scannerViewController, animated: true)
+                rootView()?.present(scannerViewController, animated: true)
             }, label: {
                 Circle()
                         .frame(width: 50, height: 100)
