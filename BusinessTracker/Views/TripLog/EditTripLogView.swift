@@ -41,17 +41,18 @@ struct EditTripLogView: View {
             print("Token not found")
             return
         }
-
-        TriplogService().updateTripLog(tripLog: updatedTripLog, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let message):
-                    print("Trip log saved: \(message)")
-                    isPresented = false
-                case .failure(let error):
-                    print("Error saving trip log: \(error)")
+        DispatchQueue.global(qos: .background).async {
+            TriplogService().updateTripLog(tripLog: updatedTripLog, authToken: token) { result in
+                DispatchQueue.main.async {
                     isLoading = false
+                    switch result {
+                    case .success(let message):
+                        print("Trip log saved: \(message)")
+                        isPresented = false
+                    case .failure(let error):
+                        print("Error saving trip log: \(error)")
+                        isLoading = false
+                    }
                 }
             }
         }
@@ -65,15 +66,16 @@ struct EditTripLogView: View {
         }
         
         isLoading = true
-        
-        ClientService().fetchClientById(clientId: clientId, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let client):
-                    self.client = (name: client.name, id: client.id)
-                case .failure(let error):
-                    print("Error fetching client name: \(error)")
+        DispatchQueue.global(qos: .background).async {
+            ClientService().fetchClientById(clientId: clientId, authToken: token) { result in
+                DispatchQueue.main.async {
+                    isLoading = false
+                    switch result {
+                    case .success(let client):
+                        self.client = (name: client.name, id: client.id)
+                    case .failure(let error):
+                        print("Error fetching client name: \(error)")
+                    }
                 }
             }
         }
@@ -86,15 +88,16 @@ struct EditTripLogView: View {
         }
         
         isLoading = true
-        
-        VehicleService().fetchVehicleById(vehicleId: vehicleId, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let vehicle):
-                    self.vehicleId = (name: vehicle.name, id: vehicle.id)
-                case .failure(let error):
-                    print("Error fetching vehicle name: \(error)")
+        DispatchQueue.global(qos: .background).async {
+            VehicleService().fetchVehicleById(vehicleId: vehicleId, authToken: token) { result in
+                DispatchQueue.main.async {
+                    isLoading = false
+                    switch result {
+                    case .success(let vehicle):
+                        self.vehicleId = (name: vehicle.name, id: vehicle.id)
+                    case .failure(let error):
+                        print("Error fetching vehicle name: \(error)")
+                    }
                 }
             }
         }

@@ -81,19 +81,20 @@ struct ClientMainView: View {
         }
 
         self.isAnimating = true
-
-        ClientService().fetchClientsByUserId(userId: userId, authToken: token) { result in
-            switch result {
-            case .success(let fetchedClients):
-                DispatchQueue.global(qos: .background).async {
-                    self.clients = fetchedClients
-                    self.isAnimating = false
-                    print("Clients: \(self.clients)")
-                }
-            case .failure(let error):
-                print("Error fetching clients: \(error)")
-                DispatchQueue.global(qos: .background).async {
-                    self.isAnimating = false
+        DispatchQueue.global(qos: .background).async {
+            ClientService().fetchClientsByUserId(userId: userId, authToken: token) { result in
+                switch result {
+                case .success(let fetchedClients):
+                    DispatchQueue.main.async {
+                        self.clients = fetchedClients
+                        self.isAnimating = false
+                        print("Clients: \(self.clients)")
+                    }
+                case .failure(let error):
+                    print("Error fetching clients: \(error)")
+                    DispatchQueue.global(qos: .background).async {
+                        self.isAnimating = false
+                    }
                 }
             }
         }

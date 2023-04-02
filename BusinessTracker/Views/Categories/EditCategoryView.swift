@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseStorage
 
 struct EditCategoryView: View {
     @Binding var isPresented: Bool
@@ -120,28 +122,83 @@ struct EditCategoryView: View {
     func saveCategory() {
         isLoading = true
 
-        let newCategory = Category(name: name, icon: icon, id: category.id)
-
-        guard let token = getToken() else {
-            print("Token not found")
+        guard let image = image else {
+            print("No image selected")
+            isLoading = false
             return
         }
-
-        CategoryService().saveCategory(category: newCategory, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
+        DispatchQueue.global(qos: .background).async {
+            uploadImageToFirebaseStorage(image: image) { result in
                 switch result {
-                case .success(let category):
-                    print("Category saved: \(category)")
-                    isPresented = false
+                case .success(let imageURL):
+                    
+                    let newCategory = Category(name: name, icon: imageURL, id: UUID().uuidString)
+                    
+                    guard let token = getToken() else {
+                        print("Token not found")
+                        return
+                    }
+                    CategoryService().saveCategory(category: newCategory, authToken: token) { result in
+                        DispatchQueue.main.async {
+                            isLoading = false
+                            switch result {
+                            case .success(let category):
+                                print("Category saved: \(category)")
+                                isPresented = false
+                            case .failure(let error):
+                                print("Error saving category: \(error)")
+                                isPresented = false
+                            }
+                        }
+                    }
+                    
                 case .failure(let error):
-                    print("Error saving category: \(error)")
+                    print("Error uploading image: \(error)")
                     isPresented = false
+                    isLoading = false
                 }
             }
         }
     }
     
+    func uploadImageToFirebaseStorage(image: UIImage, completion: @escaping (Result<String, Error>) -> Void) {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to convert image to JPEG data"])))
+            return
+        }
+        
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        let imageName = UUID().uuidString
+        let imageRef = storageRef.child("category_images/\(imageName).jpg")
+        
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpeg"
+        
+        let uploadTask = imageRef.putData(imageData, metadata: metadata) { metadata, error in
+            if let error = error {
+                print("⚠️", "Api Error \(error)")
+                completion(.failure(error))
+                return
+            }
+            
+            imageRef.downloadURL { url, error in
+                if let error = error {
+                    print("⚠️", "Image Error \(error)")
+                    completion(.failure(error))
+                    return
+                }
+                
+                if let url = url {
+                    print("💯", "Image Success")
+                    completion(.success(url.absoluteString))
+                } else {
+                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to get download URL"])))
+                    print("📛", "Error no URL")
+                }
+            }
+        }
+    }
 }
 
 struct EditCategoryView_Previews: PreviewProvider {

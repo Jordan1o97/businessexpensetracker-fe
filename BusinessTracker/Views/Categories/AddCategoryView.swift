@@ -31,36 +31,37 @@ struct AddCategoryView: View {
             isLoading = false
             return
         }
-
-        uploadImageToFirebaseStorage(image: image) { result in
-            switch result {
-            case .success(let imageURL):
-                
-                let newCategory = Category(name: name, icon: imageURL, id: UUID().uuidString)
-
-                guard let token = getToken() else {
-                    print("Token not found")
-                    return
-                }
-
-                CategoryService().createCategory(category: newCategory, authToken: token) { result in
-                    DispatchQueue.global(qos: .background).async {
-                        isLoading = false
-                        switch result {
-                        case .success(let category):
-                            print("Category saved: \(category)")
-                            isPresented = false
-                        case .failure(let error):
-                            print("Error saving category: \(error)")
-                            isPresented = false
+        DispatchQueue.global(qos: .background).async {
+            uploadImageToFirebaseStorage(image: image) { result in
+                switch result {
+                case .success(let imageURL):
+                    
+                    let newCategory = Category(name: name, icon: imageURL, id: UUID().uuidString)
+                    
+                    guard let token = getToken() else {
+                        print("Token not found")
+                        return
+                    }
+                    
+                    CategoryService().createCategory(category: newCategory, authToken: token) { result in
+                        DispatchQueue.main.async {
+                            isLoading = false
+                            switch result {
+                            case .success(let category):
+                                print("Category saved: \(category)")
+                                isPresented = false
+                            case .failure(let error):
+                                print("Error saving category: \(error)")
+                                isPresented = false
+                            }
                         }
                     }
+                    
+                case .failure(let error):
+                    print("Error uploading image: \(error)")
+                    isPresented = false
+                    isLoading = false
                 }
-
-            case .failure(let error):
-                print("Error uploading image: \(error)")
-                isPresented = false
-                isLoading = false
             }
         }
     }

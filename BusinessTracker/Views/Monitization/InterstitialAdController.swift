@@ -19,12 +19,14 @@ class InterstitialAdController: NSObject, GADFullScreenContentDelegate {
 
     func loadInterstitialAd() {
         let request = GADRequest()
-        GADInterstitialAd.load(withAdUnitID: "ca-app-pub-9324761796430059/6793125518", request: request) { [weak self] (ad, error) in
-            if let error = error {
-                print("Loading failed: \(error.localizedDescription)")
-            } else {
-                self?.interstitialAd = ad
-                self?.interstitialAd?.fullScreenContentDelegate = self
+        DispatchQueue.global(qos: .background).async {
+            GADInterstitialAd.load(withAdUnitID: "ca-app-pub-9324761796430059/6793125518", request: request) { [weak self] (ad, error) in
+                if let error = error {
+                    print("Loading failed: \(error.localizedDescription)")
+                } else {
+                    self?.interstitialAd = ad
+                    self?.interstitialAd?.fullScreenContentDelegate = self
+                }
             }
         }
     }

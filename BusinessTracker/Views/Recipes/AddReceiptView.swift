@@ -41,16 +41,17 @@ struct AddReceiptView: View {
             print("Token not found")
             return
         }
-
-        ReceiptService().createReceipt(receipt: newReceipt, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let message):
-                    print(message)
-                    isPresented = false
-                case .failure(let error):
-                    print("Error saving receipt: \(error)")
+        DispatchQueue.global(qos: .background).async {
+            ReceiptService().createReceipt(receipt: newReceipt, authToken: token) { result in
+                DispatchQueue.main.async {
+                    isLoading = false
+                    switch result {
+                    case .success(let message):
+                        print(message)
+                        isPresented = false
+                    case .failure(let error):
+                        print("Error saving receipt: \(error)")
+                    }
                 }
             }
         }

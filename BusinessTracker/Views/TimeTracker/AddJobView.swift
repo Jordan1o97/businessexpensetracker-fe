@@ -31,16 +31,17 @@ struct AddJobView: View {
             print("Token not found")
             return
         }
-
-        JobService().createJob(job: newJob, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let job):
-                    print("Job saved: \(job)")
-                    isPresented = false
-                case .failure(let error):
-                    print("Error saving job: \(error)")
+        DispatchQueue.global(qos: .background).async {
+            JobService().createJob(job: newJob, authToken: token) { result in
+                DispatchQueue.main.async {
+                    isLoading = false
+                    switch result {
+                    case .success(let job):
+                        print("Job saved: \(job)")
+                        isPresented = false
+                    case .failure(let error):
+                        print("Error saving job: \(error)")
+                    }
                 }
             }
         }

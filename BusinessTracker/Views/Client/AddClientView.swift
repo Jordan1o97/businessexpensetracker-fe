@@ -36,17 +36,18 @@ struct AddClientView: View {
             print("Token not found")
             return
         }
-
-        ClientService().createClient(client: newClient, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let client):
-                    print("Client saved: \(client)")
-                    isPresented = false
-                case .failure(let error):
-                    print("Error saving client: \(error)")
-                    isPresented = false
+        DispatchQueue.global(qos: .background).async {
+            ClientService().createClient(client: newClient, authToken: token) { result in
+                DispatchQueue.main.async {
+                    isLoading = false
+                    switch result {
+                    case .success(let client):
+                        print("Client saved: \(client)")
+                        isPresented = false
+                    case .failure(let error):
+                        print("Error saving client: \(error)")
+                        isPresented = false
+                    }
                 }
             }
         }

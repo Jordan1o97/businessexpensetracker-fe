@@ -88,18 +88,20 @@ struct CategoryMainView: View {
         }
 
         self.isAnimating = true
-        CategoryService().fetchCategoriesByUserId(userId: userId, authToken: token) { result in
-            switch result {
-            case .success(let fetchedCategories):
-                DispatchQueue.main.async {
-                    self.categories = fetchedCategories
-                    self.isAnimating = false
-                    print("Categories: \(self.categories)")
-                }
-            case .failure(let error):
-                print("Error fetching categories: \(error)")
-                DispatchQueue.main.async {
-                    self.isAnimating = false
+        DispatchQueue.global(qos: .background).async {
+            CategoryService().fetchCategoriesByUserId(userId: userId, authToken: token) { result in
+                switch result {
+                case .success(let fetchedCategories):
+                    DispatchQueue.main.async {
+                        self.categories = fetchedCategories
+                        self.isAnimating = false
+                        print("Categories: \(self.categories)")
+                    }
+                case .failure(let error):
+                    print("Error fetching categories: \(error)")
+                    DispatchQueue.main.async {
+                        self.isAnimating = false
+                    }
                 }
             }
         }

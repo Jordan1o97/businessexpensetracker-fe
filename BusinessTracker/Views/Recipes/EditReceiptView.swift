@@ -42,18 +42,19 @@ struct EditReceiptView: View {
             print("Token not found")
             return
         }
-
-        ReceiptService().updateReceipt(receipt: updatedReceipt, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let message):
-                    print("Receipt saved: \(message)")
-                    isPresented = false
-                case .failure(let error):
-                    print("Error saving receipt: \(error)")
+        DispatchQueue.global(qos: .background).async {
+            ReceiptService().updateReceipt(receipt: updatedReceipt, authToken: token) { result in
+                DispatchQueue.main.async {
                     isLoading = false
-                    isPresented = false
+                    switch result {
+                    case .success(let message):
+                        print("Receipt saved: \(message)")
+                        isPresented = false
+                    case .failure(let error):
+                        print("Error saving receipt: \(error)")
+                        isLoading = false
+                        isPresented = false
+                    }
                 }
             }
         }
@@ -67,15 +68,16 @@ struct EditReceiptView: View {
         }
         
         isLoading = true
-        
-        ClientService().fetchClientById(clientId: clientId, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let client):
-                    self.clientId = (name: client.name, id: client.id)
-                case .failure(let error):
-                    print("Error fetching client name: \(error)")
+        DispatchQueue.global(qos: .background).async {
+            ClientService().fetchClientById(clientId: clientId, authToken: token) { result in
+                DispatchQueue.main.async {
+                    isLoading = false
+                    switch result {
+                    case .success(let client):
+                        self.clientId = (name: client.name, id: client.id)
+                    case .failure(let error):
+                        print("Error fetching client name: \(error)")
+                    }
                 }
             }
         }
@@ -88,15 +90,16 @@ struct EditReceiptView: View {
         }
         
         isLoading = true
-        
-        CategoryService().fetchCategoryById(categoryId: categoryId, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let category):
-                    self.category = (name: category.name, id: category.id)
-                case .failure(let error):
-                    print("Error fetching category name: \(error)")
+        DispatchQueue.global(qos: .background).async {
+            CategoryService().fetchCategoryById(categoryId: categoryId, authToken: token) { result in
+                DispatchQueue.main.async {
+                    isLoading = false
+                    switch result {
+                    case .success(let category):
+                        self.category = (name: category.name, id: category.id)
+                    case .failure(let error):
+                        print("Error fetching category name: \(error)")
+                    }
                 }
             }
         }

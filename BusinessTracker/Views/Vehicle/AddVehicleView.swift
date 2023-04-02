@@ -27,17 +27,18 @@ struct AddVehicleView: View {
             print("Token not found")
             return
         }
-
-        VehicleService().createVehicle(vehicle: newVehicle, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let vehicle):
-                    print("Vehicle saved: \(vehicle)")
-                    isPresented = false
-                case .failure(let error):
-                    print("Error saving vehicle: \(error)")
-                    isPresented = false
+        DispatchQueue.global(qos: .background).async {
+            VehicleService().createVehicle(vehicle: newVehicle, authToken: token) { result in
+                DispatchQueue.main.async {
+                    isLoading = false
+                    switch result {
+                    case .success(let vehicle):
+                        print("Vehicle saved: \(vehicle)")
+                        isPresented = false
+                    case .failure(let error):
+                        print("Error saving vehicle: \(error)")
+                        isPresented = false
+                    }
                 }
             }
         }

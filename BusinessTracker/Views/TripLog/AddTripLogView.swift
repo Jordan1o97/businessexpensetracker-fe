@@ -43,16 +43,17 @@ struct AddTripLogView: View {
             print("Token not found")
             return
         }
-        
-        TriplogService().createTripLog(tripLog: newTripLog, authToken: token) { result in
-            DispatchQueue.global(qos: .background).async {
-                isLoading = false
-                switch result {
-                case .success(let message):
-                    print(message)
-                    isPresented = false
-                case .failure(let error):
-                    print("Error saving trip log: \(error)")
+        DispatchQueue.global(qos: .background).async {
+            TriplogService().createTripLog(tripLog: newTripLog, authToken: token) { result in
+                DispatchQueue.main.async {
+                    isLoading = false
+                    switch result {
+                    case .success(let message):
+                        print(message)
+                        isPresented = false
+                    case .failure(let error):
+                        print("Error saving trip log: \(error)")
+                    }
                 }
             }
         }

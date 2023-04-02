@@ -23,15 +23,15 @@ struct AdButton<Content: View>: View {
     var body: some View {
         Button(action: {
             let randomNumber = Double.random(in: 0...1)
-            // randomNumber <= probabilityToShowAd &&
-
-            if accountType == "free" {
-                if let rootController = UIApplication.shared.windows.first?.rootViewController {
-                    adController.onAdDismissed = {
-                        // Execute the original button function after the ad is dismissed
-                        onButtonAction()
+            if accountType == "free" && randomNumber <= probabilityToShowAd {
+                if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+                    if let rootController = scene.windows.first?.rootViewController {
+                        adController.onAdDismissed = {
+                            // Execute the original button function after the ad is dismissed
+                            onButtonAction()
+                        }
+                        adController.showAd(from: rootController)
                     }
-                    adController.showAd(from: rootController)
                 }
             } else {
                 // Execute the original button function without showing the ad
