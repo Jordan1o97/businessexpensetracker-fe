@@ -22,8 +22,10 @@ struct CategorySettingView: View {
         ZStack {
             Color(.systemGray6).edgesIgnoringSafeArea(.all) // Set the background grey color
             VStack {
+                
+                BannerContainerView()
+
                 HStack {
-                    BannerContainerView()
                     HStack {
                         Text("Category Tracker")
                             .font(.system(size: 20, weight: .semibold))

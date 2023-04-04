@@ -38,6 +38,15 @@ struct SettingsView: View {
                 actionsSection()
                 linksSection()
             }
+            
+            //Changing Settings background to white
+            .scrollContentBackground(.hidden)
+            
+            // Removing padding on left and right cells
+            .listRowInsets(EdgeInsets())
+            .padding(.leading, -16)
+            .padding(.trailing, -16)
+            
         }
     }
 
