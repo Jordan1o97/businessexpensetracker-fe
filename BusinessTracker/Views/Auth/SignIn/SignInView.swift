@@ -20,7 +20,7 @@ struct SignInView: View {
     @State private var isSignUpViewShowing = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack() {
                 VStack(alignment: .leading) {
                     Text("Log into your")
@@ -184,10 +184,9 @@ struct SignInView: View {
                         hideKeyboard()
                     }
             )
-            .background(
-                NavigationLink("", destination: MainView(), isActive: $showMainView)
-                    .opacity(0) // Make the navigation link invisible
-            )
+            .navigationDestination(isPresented: $showMainView) {
+                MainView()
+              }
             .onAppear { // Add this modifier
                 if UserDefaults.standard.bool(forKey: "rememberMe") {
                     email = UserDefaults.standard.string(forKey: "rememberedEmail") ?? "Email"

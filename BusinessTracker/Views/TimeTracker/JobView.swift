@@ -20,7 +20,7 @@ struct JobView: View {
                     .font(.subheadline)
             }
             
-            Text("Start: \(job.start ?? Date(), formatter: DateFormatter.shortDateTime)")
+            Text("Start: \(job.start, formatter: DateFormatter.shortDateTime)")
                 .font(.footnote)
             
             if let end = job.end {

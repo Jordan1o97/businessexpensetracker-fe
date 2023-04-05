@@ -230,7 +230,6 @@ struct ReceiptMainView: View {
     }
     
     func fetchReceipts() {
-        print(self.accountType)
         guard let userId = getCurrentUserId() else {
             print("User ID not found")
             return

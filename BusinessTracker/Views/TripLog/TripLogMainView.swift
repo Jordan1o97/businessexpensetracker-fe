@@ -131,7 +131,7 @@ struct TripLogMainView: View {
                 switch result {
                 case .success(let (groupedTripLogs, clientNames, vehicleNames)):
                     DispatchQueue.main.async {
-                        let sortedGroupedTripLogs = groupedTripLogs.map { (key, tripLogs) -> (String, [TripLog]) in
+                        _ = groupedTripLogs.map { (key, tripLogs) -> (String, [TripLog]) in
                             if selectedFilter == 1 || selectedFilter == 2 || selectedFilter == 3 {
                                 let groupedTripLogs = tripLogs.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
                                 return (key, groupedTripLogs)

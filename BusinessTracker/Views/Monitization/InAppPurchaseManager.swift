@@ -38,7 +38,7 @@ class InAppPurchaseManager: NSObject, ObservableObject, SKProductsRequestDelegat
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         if let product = response.products.first{
             self.subscriptionProduct = product
-            print("⚠️", "\(self.subscriptionProduct ) Product in question")
+            print("⚠️", "\(String(describing: self.subscriptionProduct) ) Product in question")
         } else {
             print("No products found")
         }

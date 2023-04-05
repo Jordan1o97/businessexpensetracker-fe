@@ -121,7 +121,7 @@ struct TimeTrackerMainView: View {
                 switch result {
                     case .success(let (groupedJobs, clientNames)):
                         DispatchQueue.main.async {
-                            let sortedGroupedJobs = groupedJobs.map { (key, jobs) -> (String, [Job]) in
+                            _ = groupedJobs.map { (key, jobs) -> (String, [Job]) in
                                 if selectedFilter == 1 || selectedFilter == 2 || selectedFilter == 3 {
                                     let groupedJobs = jobs.sorted(by: { $0.start.compare($1.start) == .orderedDescending })
                                     return (key, groupedJobs)

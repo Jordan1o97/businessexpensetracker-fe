@@ -170,7 +170,7 @@ struct AddCategoryView: View {
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
 
-        let uploadTask = imageRef.putData(imageData, metadata: metadata) { metadata, error in
+        _ = imageRef.putData(imageData, metadata: metadata) { metadata, error in
             if let error = error {
                 print("⚠️", "Api Error \(error)")
                 completion(.failure(error))
