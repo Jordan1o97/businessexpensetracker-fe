@@ -31,6 +31,11 @@ struct CategoryView: View {
         .padding()
         .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
         .cornerRadius(10)
+        .onAppear(perform: printIcon)
+    }
+    
+    func printIcon() {
+        print(category.icon)
     }
 }
 

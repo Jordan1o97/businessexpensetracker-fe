@@ -19,6 +19,7 @@ struct SettingsView: View {
     @StateObject private var subscriptionManager = SubscriptionManager()
     @State private var showSpinner = false
     @State private var showDeleteUserAlert = false
+    @State private var showLogoutAlert = false;
     @State private var showSubscriptionView = false
     @Environment(\.colorScheme) var colorScheme
     //This is my update for the branch
@@ -44,8 +45,6 @@ struct SettingsView: View {
             
             // Removing padding on left and right cells
             .listRowInsets(EdgeInsets())
-            .padding(.leading, -16)
-            .padding(.trailing, -16)
             
         }
     }
@@ -73,8 +72,8 @@ struct SettingsView: View {
                           primaryButton: .destructive(Text("Delete"), action: deleteUserAndLogout),
                           secondaryButton: .cancel())
                 }
-            deleteUserButton(title: "Logout")
-                .alert(isPresented: $showDeleteUserAlert) {
+            logoutButton(title: "Logout")
+                .alert(isPresented: $showLogoutAlert) {
                     Alert(title: Text("Logout"),
                           message: Text("Are you sure you want to log out?"),
                           primaryButton: .destructive(Text("Logout"), action: logout),
@@ -97,6 +96,16 @@ struct SettingsView: View {
 
     private func deleteUserButton(title: String) -> some View {
         Button(action: { showDeleteUserAlert.toggle() }) {
+            HStack {
+                Text(title)
+                    .foregroundColor(.primary)
+                Spacer()
+            }
+        }
+    }
+    
+    private func logoutButton(title: String) -> some View {
+        Button(action: { showLogoutAlert.toggle() }) {
             HStack {
                 Text(title)
                     .foregroundColor(.primary)

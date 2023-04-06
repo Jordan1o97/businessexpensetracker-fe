@@ -6,8 +6,8 @@
 //
 
 import UIKit
-import GoogleMobileAds
 import Firebase
+import GoogleMobileAds
 
 class CustomAppDelegate: NSObject, UIApplicationDelegate {
     
