@@ -19,6 +19,7 @@ struct EditCategoryView: View {
     @State private var showImagePicker: Bool = false
     @State private var isLoading: Bool = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @State private var disableTouch = false
 
     var canSave: Bool {
         return !name.isEmpty
@@ -105,6 +106,15 @@ struct EditCategoryView: View {
                 .background(Color(.systemBackground).opacity(0.8))
                 .edgesIgnoringSafeArea(.all)
             }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: isLoading) { newValue in
+            disableTouch = newValue
         }
         .gesture(
             DragGesture(minimumDistance: 50)

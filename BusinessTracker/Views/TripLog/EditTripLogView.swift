@@ -27,6 +27,7 @@ struct EditTripLogView: View {
     @State private var showClientMainView = false
     @State private var showVehicleMainView = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @State private var disableTouch = false
 
     var canSave: Bool {
         return !expense.isEmpty && !vehicleId.id.isEmpty && !origin.isEmpty && !destination.isEmpty && !client.id.isEmpty
@@ -229,6 +230,15 @@ struct EditTripLogView: View {
                 .background(Color(.systemBackground).opacity(0.8))
                 .edgesIgnoringSafeArea(.all)
             }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: isLoading) { newValue in
+            disableTouch = newValue
         }
         .gesture(
             DragGesture(minimumDistance: 50)

@@ -18,6 +18,7 @@ struct TripLogMainView: View {
     @State private var isEditViewPresented = false
     @State private var selectedTripLog: TripLog?
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @State private var disableTouch = false
     @Environment(\.colorScheme) var colorScheme
 
     private let filterTitles = ["Day", "Month", "Year", "Vehicle", "Client"]
@@ -99,6 +100,15 @@ struct TripLogMainView: View {
                     .background(Color.white)
                     .cornerRadius(8)
             }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: isAnimating) { newValue in
+            disableTouch = newValue
         }
     }
     

@@ -18,6 +18,7 @@ struct SignInView: View {
     @State private var showMainView = false
     @State private var showSpinner = false
     @State private var isSignUpViewShowing = false
+    @State private var disableTouch = false
 
     var body: some View {
         NavigationStack {
@@ -175,6 +176,15 @@ struct SignInView: View {
                         .frame(width: 100, height: 100)
                         .overlay(ActivityIndicatorView(isAnimating: showSpinner))
                 }
+                if disableTouch {
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .onTapGesture {}
+                        .allowsHitTesting(true)
+                }
+            }
+            .onChange(of: showSpinner) { newValue in
+                disableTouch = newValue
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.clear)

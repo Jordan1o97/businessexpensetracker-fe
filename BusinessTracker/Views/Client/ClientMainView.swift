@@ -8,6 +8,7 @@ struct ClientMainView: View {
     @State private var clients: [Client] = []
     @State private var isAnimating: Bool = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @State private var disableTouch = false
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
@@ -67,6 +68,15 @@ struct ClientMainView: View {
                     .background(Color.white)
                     .cornerRadius(8)
             }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: isAnimating) { newValue in
+            disableTouch = newValue
         }
     }
 

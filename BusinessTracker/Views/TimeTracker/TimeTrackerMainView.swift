@@ -9,6 +9,7 @@ struct TimeTrackerMainView: View {
     @State private var groupedJobs: [(String, [Job])] = []
     @State private var isEditViewPresented = false
     @State private var selectedJob: Job?
+    @State private var disableTouch = false
     @Environment(\.colorScheme) var colorScheme
     
     private let filterTitles = ["Day", "Month", "Year", "Job", "Client"]
@@ -90,6 +91,15 @@ struct TimeTrackerMainView: View {
                     .background(Color.white)
                     .cornerRadius(8)
             }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: isAnimating) { newValue in
+            disableTouch = newValue
         }
     }
     

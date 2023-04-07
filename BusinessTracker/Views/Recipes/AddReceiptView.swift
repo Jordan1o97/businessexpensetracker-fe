@@ -24,6 +24,7 @@ struct AddReceiptView: View {
     @State private var showCategoryMainView = false
     @State private var showClientMainView = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @State private var disableTouch = false
 
     var editMode: Bool = false // Set this to true when editing an existing receipt
 
@@ -178,6 +179,15 @@ struct AddReceiptView: View {
                 .background(Color(.systemBackground).opacity(0.8))
                 .edgesIgnoringSafeArea(.all)
             }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: isLoading) { newValue in
+            disableTouch = newValue
         }
         .gesture(
             DragGesture(minimumDistance: 50)

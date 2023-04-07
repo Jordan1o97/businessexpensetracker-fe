@@ -26,6 +26,7 @@ struct ReceiptMainView: View {
     @State private var showPDFPreview = false
     @State private var cancellable: AnyCancellable?
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @State private var disableTouch = false
     @Environment(\.colorScheme) var colorScheme
     
     private let filterTitles = ["Day", "Month", "Year", "Category", "Client"]
@@ -161,6 +162,15 @@ struct ReceiptMainView: View {
                             .background(Color.white)
                             .cornerRadius(8)
                     }
+                    if disableTouch {
+                        Color.clear
+                            .contentShape(Rectangle())
+                            .onTapGesture {}
+                            .allowsHitTesting(true)
+                    }
+                }
+                .onChange(of: isAnimating) { newValue in
+                    disableTouch = newValue
                 }
 
 //            }

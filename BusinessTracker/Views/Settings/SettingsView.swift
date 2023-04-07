@@ -21,6 +21,7 @@ struct SettingsView: View {
     @State private var showDeleteUserAlert = false
     @State private var showLogoutAlert = false;
     @State private var showSubscriptionView = false
+    @State private var disableTouch = false
     @Environment(\.colorScheme) var colorScheme
     //This is my update for the branch
     @Environment(\.openURL) var openURL
@@ -49,7 +50,21 @@ struct SettingsView: View {
             }
 
             .navigationTitle("Settings")
-            
+            if showSpinner {
+                ActivityIndicatorView(isAnimating: showSpinner)
+                    .frame(width: 50, height: 50)
+                    .background(Color.white)
+                    .cornerRadius(8)
+            }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: showSpinner) { newValue in
+            disableTouch = newValue
         }
     }
     

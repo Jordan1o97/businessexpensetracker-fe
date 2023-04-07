@@ -27,6 +27,7 @@ struct EditReceiptView: View {
     @State private var showCategoryMainView = false
     @State private var showClientMainView = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @State private var disableTouch = false
     
     var canSave: Bool {
         return !category.id.isEmpty && !initialTotal.isEmpty && !tax.isEmpty && !tip.isEmpty && !clientId.id.isEmpty && !paymentMode.isEmpty && !description.isEmpty
@@ -225,7 +226,15 @@ struct EditReceiptView: View {
                 .background(Color(.systemBackground).opacity(0.8))
                 .edgesIgnoringSafeArea(.all)
             }
-            
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: isLoading) { newValue in
+            disableTouch = newValue
         }
         .gesture(
             DragGesture(minimumDistance: 50)
