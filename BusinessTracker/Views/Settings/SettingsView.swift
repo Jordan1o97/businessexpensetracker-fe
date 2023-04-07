@@ -23,29 +23,47 @@ struct SettingsView: View {
     @State private var showSubscriptionView = false
     @Environment(\.colorScheme) var colorScheme
     //This is my update for the branch
-    
+    @Environment(\.openURL) var openURL
+
     var body: some View {
-        VStack {
-            customTitleView()
-                .padding(.top, 50)
-            Form {
-                if accountType == "free" {
-                    BannerView(adUnitID: "ca-app-pub-9324761796430059/9535673072")
-                        .frame(height: 50)
-                        .listRowInsets(EdgeInsets())
+        NavigationView {
+            VStack {
+                Form {
+                    if accountType == "free" {
+                        BannerView(adUnitID: "ca-app-pub-9324761796430059/9535673072")
+                            .frame(height: 50)
+                            .listRowInsets(EdgeInsets())
+                    }
+                    managersSection()
+                    accountSection()
+                    actionsSection()
+                    managersPolicy()
                 }
-                managersSection()
-                accountSection()
-                actionsSection()
-                linksSection()
+                
+                //Changing Settings background to white
+                .scrollContentBackground(.hidden)
+                
+                // Removing padding on left and right cells
+                .listRowInsets(EdgeInsets())
+                
             }
+
+            .navigationTitle("Settings")
             
-            //Changing Settings background to white
-            .scrollContentBackground(.hidden)
-            
-            // Removing padding on left and right cells
-            .listRowInsets(EdgeInsets())
-            
+        }
+    }
+    
+    private func managersPolicy() -> some View {
+        Section(header: Text("Policy")) {
+            Button("Privacy Policy") {
+                openURL(URL(string: "http://icubemedia.ca/privacy-policy.html")!)
+            }
+            Button("Terms of Service") {
+                openURL(URL(string: "http://icubemedia.ca/trems.html")!)
+            }
+            Button("Support") {
+                openURL(URL(string: "http://icubemedia.ca/#contact_footer")!)
+            }
         }
     }
 
@@ -129,7 +147,7 @@ struct SettingsView: View {
             Spacer()
             Text("Settings")
                 .font(.system(size: 22, weight: .bold))
-                .background(colorScheme == .dark ? .white : .black)
+//                .background(colorScheme == .dark ? .white : .black)
             Spacer()
         }
     }

@@ -28,8 +28,6 @@ struct BottomBarView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            Divider()
             HStack(spacing: 0) {
                 HStack(){
                     TabBarButtonView(imageName: "doc.text.fill", title: "Receipts", isActive: activeTab == .receipts) {
@@ -52,12 +50,8 @@ struct BottomBarView: View {
                         }
                 }.padding(.bottom, 20)
             }
-            .frame(minWidth: 400, minHeight: 75, maxHeight: 100)
-            .background(colorScheme == .dark ? Color(.systemGray6) : Color.white)
-            .padding(.horizontal)
-            .cornerRadius(22.5)
-        }
-        .background(colorScheme == .dark ? Color(.systemGray4) : Color(red: 0.97, green: 0.97, blue: 0.97))
+        
+        .frame(minWidth: 400, minHeight: 75, maxHeight: 100)
         .overlay(
             Button(action: {
                 let scannerViewController = VNDocumentCameraViewController()
