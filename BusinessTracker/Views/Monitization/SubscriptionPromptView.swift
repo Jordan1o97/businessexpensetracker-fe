@@ -10,74 +10,97 @@ import SwiftUI
 struct SubscriptionPromptView: View {
     @Binding var isPresented: Bool
     @StateObject private var iapManager = InAppPurchaseManager.shared
+    @State private var isLoading = false
+    @State private var disableTouch = false
     
     var body: some View {
-        VStack {
-            Text("Subscribe \nTo \nDisable Ads")
-                .font(.largeTitle)
-                .bold()
-                .padding(.top)
-                .multilineTextAlignment(.center)
-            
-            Spacer()
-            
+        ZStack {
             VStack {
-                Text("Monthly Subscription")
-                    .font(.title2)
+                Text("Subscribe \nTo \nDisable Ads")
+                    .font(.largeTitle)
                     .bold()
-                
-                Text("$3.99 / month")
-                    .font(.title)
-                    .bold()
-                    .padding(.bottom)
-                
-                Text("Subscriptions automatically renew unless turned off in your account settings at least 24 hours before the end of the current period. Payment is charged to your Apple account. Subscribing will remove ads in app.")
+                    .padding(.top)
                     .multilineTextAlignment(.center)
-                    .padding()
                 
-                Button(action: {
-                    disableAds();
-                }) {
-                    Text("Subscribe")
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
+                Spacer()
+                
+                VStack {
+                    Text("Monthly Subscription")
+                        .font(.title2)
+                        .bold()
+                    
+                    Text("$3.99 / month")
+                        .font(.title)
+                        .bold()
+                        .padding(.bottom)
+                    
+                    Text("Subscriptions automatically renew unless turned off in your account settings at least 24 hours before the end of the current period. Payment is charged to your Apple account. Subscribing will remove ads in app.")
+                        .multilineTextAlignment(.center)
                         .padding()
-                        .background(Color.blue)
-                        .cornerRadius(10)
+                    
+                    if isLoading {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                            .padding()
+                    } else {
+                        Button(action: {
+                            disableAds()
+                        }) {
+                            Text("Subscribe")
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                        }
+                    }
+                    
+                    Button(action: {
+                        isPresented = false
+                    }) {
+                        Text("Not Now")
+                            .foregroundColor(.blue)
+                            .padding(.top)
+                    }
                 }
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(20)
+                .padding(.horizontal)
                 
-                Button(action: {
-                    isPresented = false
-                }) {
-                    Text("Not Now")
-                        .foregroundColor(.blue)
-                        .padding(.top)
+                Spacer()
+                
+                VStack {
+                    Text("Read our")
+                    HStack {
+                        Link("Terms", destination: URL(string: "http://icubemedia.ca/trems.html")!)
+                        Text("and")
+                        Link("Privacy Policy", destination: URL(string: "http://icubemedia.ca/privacy-policy.html")!)
+                    }
                 }
+                .foregroundColor(.blue)
+                .font(.caption)
+                .padding(.bottom)
             }
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(20)
-            .padding(.horizontal)
-            
-            Spacer()
-            
-            VStack {
-                Text("Read our")
-                HStack {
-                    Link("Terms", destination: URL(string: "http://icubemedia.ca/trems.html")!)
-                    Text("and")
-                    Link("Privacy Policy", destination: URL(string: "http://icubemedia.ca/privacy-policy.html")!)
-                }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
             }
-            .foregroundColor(.blue)
-            .font(.caption)
-            .padding(.bottom)
+        }
+        .onChange(of: isLoading) { newValue in
+            disableTouch = newValue
         }
     }
     
     private func disableAds() {
+        isLoading = true
         if let product = iapManager.subscriptionProduct {
-            iapManager.purchase(product: product)
+            iapManager.purchase(product: product) {
+                self.isLoading = false
+                self.isPresented = false
+            }
         } else {
             print("Subscription product not found")
         }

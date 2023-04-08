@@ -37,7 +37,7 @@ struct MainView: View {
                 UserDefaults.standard.set(true, forKey: "subscriptionPromptShown")
             }
         }
-        .sheet(isPresented: $showSubscriptionPrompt) {
+        .fullScreenCover(isPresented: $showSubscriptionPrompt) {
             SubscriptionPromptView(isPresented: $showSubscriptionPrompt);
         }
     }

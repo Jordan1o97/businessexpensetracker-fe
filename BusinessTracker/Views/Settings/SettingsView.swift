@@ -124,7 +124,7 @@ struct SettingsView: View {
                 Spacer()
             }
         }
-        .sheet(isPresented: isPresented, content: { view })
+        .fullScreenCover(isPresented: isPresented, content: { view })
     }
 
     private func deleteUserButton(title: String) -> some View {
