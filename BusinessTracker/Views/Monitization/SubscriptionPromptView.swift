@@ -13,8 +13,10 @@ struct SubscriptionPromptView: View {
     
     var body: some View {
         VStack {
-            Text("Subscribe \nTo \nDisable Ads")
-                .font(.largeTitle)
+            Spacer()
+
+            Text("Subscribe To Disable Ads")
+                .font(.title)
                 .bold()
                 .padding(.top)
                 .multilineTextAlignment(.center)
@@ -61,13 +63,20 @@ struct SubscriptionPromptView: View {
             
             Spacer()
             
-            VStack {
-                Text("Read our")
                 HStack {
-                    Link("Terms", destination: URL(string: "http://icubemedia.ca/trems.html")!)
-                    Text("and")
-                    Link("Privacy Policy", destination: URL(string: "http://icubemedia.ca/privacy-policy.html")!)
-                }
+                    Text("Read our")
+
+                    Link(destination: URL(string: "http://icubemedia.ca/trems.html")!, label: {
+                        Text("Terms")
+                            .underline()
+                    })
+                    
+                    Text("and").underline()
+                    
+                    Link(destination: URL(string: "http://icubemedia.ca/privacy-policy.html")!, label: {
+                        Text("Policy")
+                            .underline()
+                    })
             }
             .foregroundColor(.blue)
             .font(.caption)

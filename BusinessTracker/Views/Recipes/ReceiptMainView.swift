@@ -140,20 +140,9 @@ struct ReceiptMainView: View {
                             }
                         }
                     }
-//                    .frame(width: UIScreen.main.bounds.width * 0.95)
                     .padding(.trailing)
                     .padding(.leading)
 
-//                    .frame(width: UIScreen.main.bounds.width * 7.90)
-                    //                    }
-                    //                    .padding(.top)
-                    //                    .frame(width: UIScreen.main.bounds.width * 0.90)
-                    //                    .onAppear(perform: fetchReceipts)
-                    //                    .fullScreenCover(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 })) {
-                    //                        EditReceiptView(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 }), receipt: selectedReceipt!)
-                    //                            .onDisappear(perform: fetchReceipts)
-                    //                    }
-                    //                    BannerContainerView();
                     
                     if isAnimating {
                         ActivityIndicatorView(isAnimating: isAnimating)
@@ -186,8 +175,6 @@ struct ReceiptMainView: View {
 
           
         }
-//            .padding(.top)
-//            .frame(width: UIScreen.main.bounds.width * 0.90)
             .onAppear(perform: fetchReceipts)
             .fullScreenCover(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 })) {
                 EditReceiptView(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 }), receipt: selectedReceipt!)

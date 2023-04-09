@@ -14,6 +14,7 @@ struct EditVehicleView: View {
     @State private var name: String = ""
     @State private var isLoading: Bool = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @Environment(\.presentationMode) var presentationMode
 
     var canSave: Bool {
         return !name.isEmpty
@@ -53,7 +54,9 @@ struct EditVehicleView: View {
                 BannerContainerView()
                 HStack {
                     Button(action: {
-                        isPresented = false
+//                        isPresented = false
+                        presentationMode.wrappedValue.dismiss()
+
                     }) {
                         Image(systemName: "xmark")
                             .foregroundColor(.blue)

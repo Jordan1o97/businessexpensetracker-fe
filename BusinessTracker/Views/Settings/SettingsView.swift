@@ -46,11 +46,12 @@ struct SettingsView: View {
                 // Removing padding on left and right cells
                 .listRowInsets(EdgeInsets())
                 
-            }
-
-            .navigationTitle("Settings")
-            
+            }.navigationTitle("Settings")
+        
         }
+        // Hiding Back button for seetings view
+        .navigationBarBackButtonHidden(true)
+
     }
     
     private func managersPolicy() -> some View {

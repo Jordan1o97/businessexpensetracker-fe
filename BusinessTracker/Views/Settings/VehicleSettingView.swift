@@ -51,8 +51,11 @@ struct VehicleSettingView: View {
                     VStack {
                         ForEach(vehicles) { vehicle in
                             AdButton(onButtonAction: {
-                                showEditVehicleView.toggle()
+                                print("vehicle ID roune", selectedVehicle)
                                 selectedVehicle = vehicle
+                                print("vehicle ID found", selectedVehicle)
+//                                showEditVehicleView.toggle()
+
                             }) {
                                 VehicleView(vehicle: vehicle)
                                     .padding(.horizontal)
@@ -67,7 +70,16 @@ struct VehicleSettingView: View {
                 }
                 .padding(.top)
                 .frame(width: UIScreen.main.bounds.width * 0.90)
-                .fullScreenCover(isPresented: $showEditVehicleView, content: { EditVehicleView(isPresented: $showEditVehicleView, vehicle: selectedVehicle!) })
+                
+                .fullScreenCover(item: $selectedVehicle) { item in
+                    EditVehicleView(isPresented: $showEditVehicleView, vehicle: item)
+                }
+                
+//                .popover(isPresented: $showEditVehicleView) {
+//                    EditVehicleView(isPresented: $showEditVehicleView, vehicle: selectedVehicle!)
+//                }
+                
+//                .fullScreenCover(isPresented: $showEditVehicleView, content: { EditVehicleView(isPresented: $showEditVehicleView, vehicle: selectedVehicle!) })
                 .onAppear(perform: fetchVehicles)
             }
             if isAnimating {
