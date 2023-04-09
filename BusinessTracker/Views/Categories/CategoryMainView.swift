@@ -15,6 +15,7 @@ struct CategoryMainView: View {
     @State private var categories: [Category] = []
     @State private var isAnimating: Bool = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @State private var disableTouch = false
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
@@ -74,7 +75,17 @@ struct CategoryMainView: View {
                     .background(Color.white)
                     .cornerRadius(8)
             }
-        }.background(Color(.systemGray6).edgesIgnoringSafeArea(.all))
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .background(Color(.systemGray6).edgesIgnoringSafeArea(.all))
+        .onChange(of: isAnimating) { newValue in
+            disableTouch = newValue
+        }
     }
 
     func fetchCategories() {

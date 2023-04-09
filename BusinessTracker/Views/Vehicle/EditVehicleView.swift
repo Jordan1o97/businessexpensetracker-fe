@@ -14,7 +14,11 @@ struct EditVehicleView: View {
     @State private var name: String = ""
     @State private var isLoading: Bool = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+<<<<<<< HEAD
     @Environment(\.presentationMode) var presentationMode
+=======
+    @State private var disableTouch = false
+>>>>>>> 6280be9dbfc842bd6148564493296bbea61b6f00
 
     var canSave: Bool {
         return !name.isEmpty
@@ -105,6 +109,15 @@ struct EditVehicleView: View {
                 .background(Color(.systemBackground).opacity(0.8))
                 .edgesIgnoringSafeArea(.all)
             }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: isLoading) { newValue in
+            disableTouch = newValue
         }
         .gesture(
             DragGesture(minimumDistance: 50)

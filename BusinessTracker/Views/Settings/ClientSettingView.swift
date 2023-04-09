@@ -17,6 +17,7 @@ struct ClientSettingView: View {
     @State private var isAnimating: Bool = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
     @Environment(\.colorScheme) var colorScheme
+    @State private var disableTouch = false
     
     var body: some View {
         ZStack {
@@ -79,6 +80,15 @@ struct ClientSettingView: View {
                     .background(Color.white)
                     .cornerRadius(8)
             }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: isAnimating) { newValue in
+            disableTouch = newValue
         }
     }
 

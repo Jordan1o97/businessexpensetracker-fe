@@ -19,6 +19,7 @@ func isSubscriptionActive() -> Bool {
 class InAppPurchaseManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
     static let shared = InAppPurchaseManager()
     @Published private(set) var subscriptionProduct: SKProduct?
+    private var completionHandler: (() -> Void)?
     
     override init() {
         super.init()
@@ -49,11 +50,12 @@ class InAppPurchaseManager: NSObject, ObservableObject, SKProductsRequestDelegat
     }
     
     
-    func purchase(product: SKProduct) {
+    func purchase(product: SKProduct, completion: (() -> Void)? = nil) {
         clearTransactionQueue()
         let payment = SKPayment(product: product)
         SKPaymentQueue.default().add(payment)
         print("⚠️", "Adding to queue: \(product)")
+        self.completionHandler = completion
     }
     
     func clearTransactionQueue() {
@@ -110,6 +112,9 @@ class InAppPurchaseManager: NSObject, ObservableObject, SKProductsRequestDelegat
                                         UserDefaults.standard.set(expiryDate, forKey: "subscriptionExpiryDate")
                                     }
                                     queue.finishTransaction(transaction)
+                                    DispatchQueue.main.async {
+                                       self.completionHandler?()
+                                    }
                                 case .failure(let error):
                                     print("Error validating receipt: \(error.localizedDescription)")
                                     // Handle the error accordingly
@@ -124,6 +129,9 @@ class InAppPurchaseManager: NSObject, ObservableObject, SKProductsRequestDelegat
                 case .failed:
                     print("Transaction failed: \(transaction.error?.localizedDescription ?? "unknown error")")
                     queue.finishTransaction(transaction)
+                    DispatchQueue.main.async {
+                        self.completionHandler?()
+                    }
                     
                 case .deferred, .purchasing:
                     break

@@ -26,6 +26,7 @@ struct ReceiptMainView: View {
     @State private var showPDFPreview = false
     @State private var cancellable: AnyCancellable?
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
+    @State private var disableTouch = false
     @Environment(\.colorScheme) var colorScheme
     
     private let filterTitles = ["Day", "Month", "Year", "Category", "Client"]
@@ -43,49 +44,45 @@ struct ReceiptMainView: View {
         NavigationView {
             ScrollView {
                 BannerContainerView();
-//            ZStack {
-//                Color(.systemGray6).edgesIgnoringSafeArea(.all) // Set the background grey color
                 VStack {
-//                    HStack {
-//                        //                        Text("Receipts")
-//                        //                            .font(.system(size: 20, weight: .semibold))
-//                        //                            .frame(maxWidth: .infinity, alignment: .center)
-//                        //                            .padding(.leading, 85)
-//
-//                        //                        Spacer()
-////                        AdButton(onButtonAction: {
-////                            exportReceiptsPDF()
-////                            //                        isAnimating = true;
-////                        }) {
-////                            Image(systemName: "square.and.arrow.up")
-////                                .resizable()
-////                                .foregroundColor(colorScheme == .dark ? .white : .black)
-////                                .frame(width: 18, height: 24)
-////                        }
-////                        .padding(.trailing, 10)
-////                        .sheet(isPresented: $showPDFPreview) {
-////                            PDFPreviewView(pdfData: pdfData ?? Data(), isPresented: $showPDFPreview)
-////                                .edgesIgnoringSafeArea(.all)
-////                        }
-//
-////                        AdButton(onButtonAction: {
-////                            showAddReceiptView.toggle()
-////                        }) {
-////                            Image(systemName: "plus")
-////                                .resizable()
-////                                .foregroundColor(colorScheme == .dark ? .white : .black)
-////                                .frame(width: 24, height: 24)
-////                        }
-////                        .padding(.trailing, 20) // Add custom padding to create a gap between the button and the right edge
-////                        .sheet(isPresented: $showAddReceiptView) {
-////
-////                            AddReceiptView(isPresented: $showAddReceiptView, scannedReceiptData: $scannedReceiptData)
-////                                .onDisappear(perform: fetchReceipts)
-////                        }
-//
-//
-//                    }
-//                    .padding(.horizontal)
+                    HStack {
+                        Text("Receipts")
+                            .font(.system(size: 20, weight: .semibold))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.leading, 85)
+
+                        Spacer()
+                        AdButton(onButtonAction: {
+                            exportReceiptsPDF()
+                            isAnimating = true;
+                        }) {
+                            Image(systemName: "square.and.arrow.up")
+                                .resizable()
+                                .foregroundColor(colorScheme == .dark ? .white : .black)
+                                .frame(width: 18, height: 24)
+                        }
+                        .padding(.trailing, 10)
+                        .sheet(isPresented: $showPDFPreview) {
+                            PDFPreviewView(pdfData: pdfData ?? Data(), isPresented: $showPDFPreview)
+                                .edgesIgnoringSafeArea(.all)
+                        }
+
+                        AdButton(onButtonAction: {
+                            showAddReceiptView.toggle()
+                        }) {
+                            Image(systemName: "plus")
+                                .resizable()
+                                .foregroundColor(colorScheme == .dark ? .white : .black)
+                                .frame(width: 24, height: 24)
+                        }
+                        .padding(.trailing, 20) // Add custom padding to create a gap between the button and the right edge
+                        .sheet(isPresented: $showAddReceiptView) {
+
+                            AddReceiptView(isPresented: $showAddReceiptView, scannedReceiptData: $scannedReceiptData)
+                                .onDisappear(perform: fetchReceipts)
+                        }
+                    }
+                    .padding(.horizontal)
                     
                     FilterBarView(filterTitles: filterTitles, selectedFilter: $selectedFilter)
                         .frame(width: UIScreen.main.bounds.width, height: 50)
@@ -150,28 +147,37 @@ struct ReceiptMainView: View {
                             .background(Color.white)
                             .cornerRadius(8)
                     }
+                    if disableTouch {
+                        Color.clear
+                            .contentShape(Rectangle())
+                            .onTapGesture {}
+                            .allowsHitTesting(true)
+                    }
+                }
+                .onChange(of: isAnimating) { newValue in
+                    disableTouch = newValue
                 }
 
 //            }
             .navigationBarBackButtonHidden(true)
-
-            .navigationTitle("Receipts")
-                
-            .navigationBarItems(trailing:
-                HStack {
-                    Button(action: {
-                        exportReceiptsPDF()
-                    }) {
-                        Image(systemName: "square.and.arrow.up").imageScale(.large)
-                    }
-                    
-                    Button(action: {
-                        showAddReceiptView.toggle()
-                    }) {
-                        Image(systemName: "plus").imageScale(.large)
-                    }
-                }
-            )
+//
+//            .navigationTitle("Receipts")
+//
+//            .navigationBarItems(trailing:
+//                HStack {
+//                    Button(action: {
+//                        exportReceiptsPDF()
+//                    }) {
+//                        Image(systemName: "square.and.arrow.up").imageScale(.large)
+//                    }
+//
+//                    Button(action: {
+//                        showAddReceiptView.toggle()
+//                    }) {
+//                        Image(systemName: "plus").imageScale(.large)
+//                    }
+//                }
+//            )
 
           
         }

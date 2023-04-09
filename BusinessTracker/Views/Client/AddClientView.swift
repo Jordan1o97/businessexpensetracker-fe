@@ -21,6 +21,7 @@ struct AddClientView: View {
     @State private var postalCode: String = ""
     @State private var country: String = ""
     @State private var isLoading: Bool = false
+    @State private var disableTouch = false
     @State private var accountType = UserDefaults.standard.string(forKey: "accountType")
 
     var canSave: Bool {
@@ -151,6 +152,15 @@ struct AddClientView: View {
                 .background(Color(.systemBackground).opacity(0.8))
                 .edgesIgnoringSafeArea(.all)
             }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: isLoading) { newValue in
+            disableTouch = newValue
         }
         .gesture(
             DragGesture(minimumDistance: 50)

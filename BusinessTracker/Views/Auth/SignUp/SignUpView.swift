@@ -22,6 +22,7 @@ struct SignUpView: View {
     @State private var signUpButtonState: CustomButtonState = .normal
     @State private var showSpinner = false
     @State private var errorMessage: String = ""
+    @State private var disableTouch = false
 
     var body: some View {
         ZStack() {
@@ -189,6 +190,15 @@ struct SignUpView: View {
                     .frame(width: 100, height: 100)
                     .overlay(ActivityIndicatorView(isAnimating: showSpinner))
             }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: showSpinner) { newValue in
+            disableTouch = newValue
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.clear)

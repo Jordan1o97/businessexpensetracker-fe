@@ -21,6 +21,7 @@ struct SettingsView: View {
     @State private var showDeleteUserAlert = false
     @State private var showLogoutAlert = false;
     @State private var showSubscriptionView = false
+    @State private var disableTouch = false
     @Environment(\.colorScheme) var colorScheme
     //This is my update for the branch
     @Environment(\.openURL) var openURL
@@ -46,8 +47,29 @@ struct SettingsView: View {
                 // Removing padding on left and right cells
                 .listRowInsets(EdgeInsets())
                 
+<<<<<<< HEAD
             }.navigationTitle("Settings")
         
+=======
+            }
+
+            .navigationTitle("Settings")
+            if showSpinner {
+                ActivityIndicatorView(isAnimating: showSpinner)
+                    .frame(width: 50, height: 50)
+                    .background(Color.white)
+                    .cornerRadius(8)
+            }
+            if disableTouch {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                    .allowsHitTesting(true)
+            }
+        }
+        .onChange(of: showSpinner) { newValue in
+            disableTouch = newValue
+>>>>>>> 6280be9dbfc842bd6148564493296bbea61b6f00
         }
         // Hiding Back button for seetings view
         .navigationBarBackButtonHidden(true)
@@ -110,7 +132,7 @@ struct SettingsView: View {
                 Spacer()
             }
         }
-        .sheet(isPresented: isPresented, content: { view })
+        .fullScreenCover(isPresented: isPresented, content: { view })
     }
 
     private func deleteUserButton(title: String) -> some View {
