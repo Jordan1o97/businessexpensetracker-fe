@@ -12,15 +12,17 @@ struct SubscriptionPromptView: View {
     @StateObject private var iapManager = InAppPurchaseManager.shared
     @State private var isLoading = false
     @State private var disableTouch = false
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         ZStack {
             VStack {
-                Text("Subscribe \nTo \nDisable Ads")
-                    .font(.largeTitle)
+                Text("Subscribe To Disable Ads")
+                    .font(.title)
                     .bold()
-                    .padding(.top)
+                    .padding(.top, 80)
                     .multilineTextAlignment(.center)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
                 
                 Spacer()
                 
@@ -64,21 +66,25 @@ struct SubscriptionPromptView: View {
                     }
                 }
                 .padding()
-                .background(Color(.systemGray6))
+                .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
                 .cornerRadius(20)
                 .padding(.horizontal)
                 
                 Spacer()
                 
                 VStack {
-                    Text("Read our")
                     HStack {
+                        Text("Read our")
                         Link("Terms", destination: URL(string: "http://icubemedia.ca/trems.html")!)
+                            .underline()
+                            .foregroundColor(.blue)
                         Text("and")
                         Link("Privacy Policy", destination: URL(string: "http://icubemedia.ca/privacy-policy.html")!)
+                            .underline()
+                            .foregroundColor(.blue)
                     }
                 }
-                .foregroundColor(.blue)
+                .foregroundColor(colorScheme == .dark ? .white : .black)
                 .font(.caption)
                 .padding(.bottom)
             }

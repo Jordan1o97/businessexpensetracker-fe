@@ -125,11 +125,6 @@ struct AddTripLogView: View {
                                 .keyboardType(.numberPad)
                         }
                         HStack {
-                            Text("Total:")
-                            TextField("225.00", text: $total)
-                                .keyboardType(.numberPad)
-                        }
-                        HStack {
                             Text("Origin:")
                             TextField("Halifax, NS", text: $origin)
                         }

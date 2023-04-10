@@ -52,8 +52,8 @@ struct VehicleSettingView: View {
                     VStack {
                         ForEach(vehicles) { vehicle in
                             AdButton(onButtonAction: {
-                                showEditVehicleView.toggle()
                                 selectedVehicle = vehicle
+                                showEditVehicleView.toggle()
                             }) {
                                 VehicleView(vehicle: vehicle)
                                     .padding(.horizontal)
@@ -68,7 +68,10 @@ struct VehicleSettingView: View {
                 }
                 .padding(.top)
                 .frame(width: UIScreen.main.bounds.width * 0.90)
-                .fullScreenCover(isPresented: $showEditVehicleView, content: { EditVehicleView(isPresented: $showEditVehicleView, vehicle: selectedVehicle!) })
+                .fullScreenCover(isPresented: Binding(get: { showEditVehicleView }, set: { showEditVehicleView = $0 })) {
+                    EditVehicleView(isPresented: Binding(get: { showEditVehicleView }, set: { showEditVehicleView = $0 }), vehicle: selectedVehicle!)
+                        .onDisappear(perform: fetchVehicles)
+                }
                 .onAppear(perform: fetchVehicles)
             }
             if isAnimating {

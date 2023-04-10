@@ -41,77 +41,76 @@ struct ReceiptMainView: View {
     }
     
     var body: some View {
-        NavigationView {
-            ScrollView {
+        ZStack {
+            VStack {
                 BannerContainerView();
+                HStack {
+                    Text("Receipts")
+                        .font(.system(size: 20, weight: .semibold))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.leading, 85)
+                    
+                    Spacer()
+                    AdButton(onButtonAction: {
+                        exportReceiptsPDF()
+                        isAnimating = true;
+                    }) {
+                        Image(systemName: "square.and.arrow.up")
+                            .resizable()
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .frame(width: 18, height: 24)
+                    }
+                    .padding(.trailing, 10)
+                    .sheet(isPresented: $showPDFPreview) {
+                        PDFPreviewView(pdfData: pdfData ?? Data(), isPresented: $showPDFPreview)
+                            .edgesIgnoringSafeArea(.all)
+                    }
+                    
+                    AdButton(onButtonAction: {
+                        showAddReceiptView.toggle()
+                    }) {
+                        Image(systemName: "plus")
+                            .resizable()
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.trailing, 20)
+                    .sheet(isPresented: $showAddReceiptView) {
+                        
+                        AddReceiptView(isPresented: $showAddReceiptView, scannedReceiptData: $scannedReceiptData)
+                            .onDisappear(perform: fetchReceipts)
+                    }
+                }
+                .padding(.horizontal)
+                
+                FilterBarView(filterTitles: filterTitles, selectedFilter: $selectedFilter)
+                    .frame(width: UIScreen.main.bounds.width, height: 50)
+                    .padding(.top, 16)
+                    .onChange(of: selectedFilter) { _ in
+                        fetchReceipts()
+                    }
+                
                 VStack {
                     HStack {
-                        Text("Receipts")
-                            .font(.system(size: 20, weight: .semibold))
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.leading, 85)
-
+                        Text("Total:")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.white)
+                        
                         Spacer()
-                        AdButton(onButtonAction: {
-                            exportReceiptsPDF()
-                            isAnimating = true;
-                        }) {
-                            Image(systemName: "square.and.arrow.up")
-                                .resizable()
-                                .foregroundColor(colorScheme == .dark ? .white : .black)
-                                .frame(width: 18, height: 24)
-                        }
-                        .padding(.trailing, 10)
-                        .sheet(isPresented: $showPDFPreview) {
-                            PDFPreviewView(pdfData: pdfData ?? Data(), isPresented: $showPDFPreview)
-                                .edgesIgnoringSafeArea(.all)
-                        }
-
-                        AdButton(onButtonAction: {
-                            showAddReceiptView.toggle()
-                        }) {
-                            Image(systemName: "plus")
-                                .resizable()
-                                .foregroundColor(colorScheme == .dark ? .white : .black)
-                                .frame(width: 24, height: 24)
-                        }
-                        .padding(.trailing, 20) // Add custom padding to create a gap between the button and the right edge
-                        .sheet(isPresented: $showAddReceiptView) {
-
-                            AddReceiptView(isPresented: $showAddReceiptView, scannedReceiptData: $scannedReceiptData)
-                                .onDisappear(perform: fetchReceipts)
-                        }
+                        
+                        Text(String(format: "%.2f", total))
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.white)
                     }
+                    .padding(.vertical, 8)
                     .padding(.horizontal)
-                    
-                    FilterBarView(filterTitles: filterTitles, selectedFilter: $selectedFilter)
-                        .frame(width: UIScreen.main.bounds.width, height: 50)
-                        .padding(.top, 16)
-                        .onChange(of: selectedFilter) { _ in
-                            fetchReceipts()
-                        }
-                    
-                    VStack {
-                        HStack {
-                            Text("Total:")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(.white)
-                            
-                            Spacer()
-                            
-                            Text(String(format: "%.2f", total))
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(.white)
-                        }
-                        .padding(.vertical, 8)
-                        .padding(.horizontal)
-                    }
-                    .frame(width: UIScreen.main.bounds.width * 0.95, height: 50)
-                    .background(Color(#colorLiteral(red: 0.231372549, green: 0.4470588235, blue: 0.9294117647, alpha: 0.8)))
-                    .cornerRadius(20)
-                    .padding(.top, 16)
-                    
-                    //                    ScrollView {
+                }
+                .frame(width: UIScreen.main.bounds.width * 0.95, height: 50)
+                .background(Color(#colorLiteral(red: 0.231372549, green: 0.4470588235, blue: 0.9294117647, alpha: 0.8)))
+                .cornerRadius(20)
+                .padding(.top, 16)
+                
+                ScrollView {
                     VStack {
                         ForEach(groupedReceipts, id: \.0) { group in
                             Text(getGroupHeader(group: group))
@@ -137,71 +136,37 @@ struct ReceiptMainView: View {
                             }
                         }
                     }
-//                    .frame(width: UIScreen.main.bounds.width * 0.95)
-                    .padding(.trailing)
-                    .padding(.leading)
-
-//                    .frame(width: UIScreen.main.bounds.width * 7.90)
-                    //                    }
-                    //                    .padding(.top)
-                    //                    .frame(width: UIScreen.main.bounds.width * 0.90)
-                    //                    .onAppear(perform: fetchReceipts)
-                    //                    .fullScreenCover(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 })) {
-                    //                        EditReceiptView(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 }), receipt: selectedReceipt!)
-                    //                            .onDisappear(perform: fetchReceipts)
-                    //                    }
-                    //                    BannerContainerView();
-                    
-                    if isAnimating {
-                        ActivityIndicatorView(isAnimating: isAnimating)
-                            .frame(width: 50, height: 50)
-                            .background(Color.white)
-                            .cornerRadius(8)
-                    }
-                    if disableTouch {
-                        Color.clear
-                            .contentShape(Rectangle())
-                            .onTapGesture {}
-                            .allowsHitTesting(true)
-                    }
                 }
-                .onChange(of: isAnimating) { newValue in
-                    disableTouch = newValue
+                .padding(.top)
+                .frame(width: UIScreen.main.bounds.width * 0.90)
+                .onAppear(perform: fetchReceipts)
+                .fullScreenCover(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 })) {
+                    EditReceiptView(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 }), receipt: selectedReceipt!)
+                        .onDisappear(perform: fetchReceipts)
                 }
-
-//            }
-            .navigationBarBackButtonHidden(true)
-//
-//            .navigationTitle("Receipts")
-//
-//            .navigationBarItems(trailing:
-//                HStack {
-//                    Button(action: {
-//                        exportReceiptsPDF()
-//                    }) {
-//                        Image(systemName: "square.and.arrow.up").imageScale(.large)
-//                    }
-//
-//                    Button(action: {
-//                        showAddReceiptView.toggle()
-//                    }) {
-//                        Image(systemName: "plus").imageScale(.large)
-//                    }
-//                }
-//            )
-
-          
-        }
-//            .padding(.top)
-//            .frame(width: UIScreen.main.bounds.width * 0.90)
+                BannerContainerView();
+                
+                if isAnimating {
+                    ActivityIndicatorView(isAnimating: isAnimating)
+                        .frame(width: 50, height: 50)
+                        .background(Color.white)
+                        .cornerRadius(8)
+                }
+                if disableTouch {
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .onTapGesture {}
+                        .allowsHitTesting(true)
+                }
+            }
+            .onChange(of: isAnimating) { newValue in
+                disableTouch = newValue
+            }
             .onAppear(perform: fetchReceipts)
             .fullScreenCover(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 })) {
                 EditReceiptView(isPresented: Binding(get: { isEditViewPresented }, set: { isEditViewPresented = $0 }), receipt: selectedReceipt!)
                     .onDisappear(perform: fetchReceipts)
             }
-            BannerContainerView();
-            
-
         }
     }
     
@@ -312,8 +277,32 @@ struct ReceiptMainView: View {
                         self.receipts = flattenedReceipts
                         self.clientNames = clientNames
                         self.categoryNames = categoryNames
-                        self.groupedReceipts = groupedReceipts
-                        fetchTotal();
+
+                        // Create a DateFormatter to parse the date strings
+                        let dateFormatter = DateFormatter()
+                        
+                        // Sort the groupedReceipts by their keys as dates
+                        self.groupedReceipts = groupedReceipts.sorted(by: { (group1, group2) -> Bool in
+                            if selectedFilter == 0 || selectedFilter == 1 {
+                                dateFormatter.dateFormat = selectedFilter == 0 ? "MM/dd/yyyy" : "MM/yyyy"
+                                if let date1 = dateFormatter.date(from: group1.0), let date2 = dateFormatter.date(from: group2.0) {
+                                    return date1 < date2
+                                }
+                            } else {
+                                // If dates can't be parsed, fall back to string comparison
+                                return group1.0 < group2.0
+                            }
+                            return false
+                        }).map { (key, receipts) -> (String, [Receipt]) in
+                            if selectedFilter == 2 || selectedFilter == 3 || selectedFilter == 4 {
+                                let sortedReceipts = receipts.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+                                return (key, sortedReceipts)
+                            } else {
+                                return (key, receipts)
+                            }
+                        }
+
+                        fetchTotal()
                         self.isAnimating = false
                     }
                 case .failure(let error):

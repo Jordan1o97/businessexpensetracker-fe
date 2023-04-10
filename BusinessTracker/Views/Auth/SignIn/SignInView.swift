@@ -80,6 +80,12 @@ struct SignInView: View {
                         .background(Color.black)
                         .cornerRadius(12)
                         .foregroundColor(.white)
+                        HStack{
+                            Spacer()
+                            LinkButton(title: "Forget Password", url: URL(string: "http://icubemedia.ca/#contact_footer")!)
+                            Spacer()
+                        }
+                        
                         
                         HStack {
                             Spacer()
@@ -104,7 +110,7 @@ struct SignInView: View {
                                 .lineSpacing(22)
                             Spacer()
                         }
-                        .padding(.top, 20)
+                        .padding(.top, 10)
                         .padding(.bottom, 40)
                     }
                     .padding(.top, 40)

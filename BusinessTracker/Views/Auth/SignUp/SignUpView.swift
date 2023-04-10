@@ -19,6 +19,8 @@ struct SignUpView: View {
     @Binding var password: String;
     @State private var rememberMe = true 
     @State private var showPassword = false
+    @State private var confirmPassword: String = "" // Add confirm password state
+    @State private var passwordsMatch: Bool = true // Add state for password match
     @State private var signUpButtonState: CustomButtonState = .normal
     @State private var showSpinner = false
     @State private var errorMessage: String = ""
@@ -27,14 +29,27 @@ struct SignUpView: View {
     var body: some View {
         ZStack() {
             VStack(alignment: .leading) {
-                Text("Create an Account Now")
+                Text("Create an Account")
                     .font(.custom("Urbanist", size: 40))
                     .fontWeight(.bold)
                     .lineSpacing(11)
                     .padding(.top, 71)
                     .padding(.leading, 24)
+                Text("Now")
+                    .font(.custom("Urbanist", size: 40))
+                    .fontWeight(.bold)
+                    .lineSpacing(11)
+                    .padding(.top, 1)
+                    .padding(.leading, 24)
                 
                 VStack(alignment: .leading, spacing: 20) {
+                    HStack(){
+                        Spacer()
+                        Text("Credentials are case sensitive") // Add warning message
+                            .foregroundColor(.red)
+                            .font(.custom("Urbanist", size: 14))
+                        Spacer()
+                    }
                     VStack {
                         HStack {
                             Image(systemName: "building.2")
@@ -105,6 +120,43 @@ struct SignUpView: View {
                             } else {
                                 SecureField("Password", text: $password)
                                     .foregroundColor(.white) // add this line to change the text color to white
+                                    .overlay(
+                                        Text("Password")
+                                            .foregroundColor(Color.white.opacity(0.7))
+                                            .padding(.leading, 4)
+                                            .opacity(password.isEmpty ? 1 : 0)
+                                        , alignment: .leading
+                                    )
+                            }
+                            Button(action: { self.showPassword.toggle() }) {
+                                Image(systemName: self.showPassword ? "eye.slash" : "eye")
+                                    .foregroundColor(.white)
+                            }
+                        }
+                        Divider()
+                    }
+                    .padding(12)
+                    .background(Color.black)
+                    .cornerRadius(12)
+                    .foregroundColor(.white)
+                    
+                    VStack {
+                        HStack {
+                            Image(systemName: "lock")
+                                .foregroundColor(.white)
+                            if showPassword {
+                                TextField("Confirm Password", text: $confirmPassword)
+                                    .foregroundColor(.white) // add this line to change the text color to white
+                            } else {
+                                SecureField("Confirm Password", text: $confirmPassword)
+                                    .foregroundColor(.white) // add this line to change the text color to white
+                                    .overlay(
+                                        Text("Confirm Password")
+                                            .foregroundColor(Color.white.opacity(0.7))
+                                            .padding(.leading, 4)
+                                            .opacity(password.isEmpty ? 1 : 0)
+                                        , alignment: .leading
+                                    )
                             }
                             Button(action: { self.showPassword.toggle() }) {
                                 Image(systemName: self.showPassword ? "eye.slash" : "eye")
@@ -118,7 +170,7 @@ struct SignUpView: View {
                     .cornerRadius(12)
                     .foregroundColor(.white)
                 }
-                .padding(.top, 40)
+                .padding(.top, 20)
                 .padding(.horizontal, 24)
                 HStack {
                     Spacer()
@@ -136,26 +188,32 @@ struct SignUpView: View {
                         requiredFields: [name, companyName, email, password]
                     ) {
                         if !name.isEmpty && !companyName.isEmpty && !email.isEmpty && !password.isEmpty {
-                            // Perform sign up action
-                            signUpButtonState = .normal
-                            self.showSpinner = true
-                            UserServie().signUp(accountType: "free", username: email, password: password, name: name, companyName: companyName) { result in
-                                self.showSpinner = false
-                                switch result {
-                                case .success(let user):
-                                    print("User created successfully: \(user)")
-                                    // Navigate to the next view or show a success message
-                                    self.isPresented = false
-                                case .failure(let error):
-                                    print("Error creating user: \(error)")
-                                    // Show an error message and update the button state
-                                    signUpButtonState = .error
-                                    if let userServiceError = error as? UserServiceError, userServiceError == .emailAlreadyInUse {
-                                        errorMessage = "Email is already in use."
-                                    } else {
-                                        errorMessage = "An error occurred. Please try again."
+                            
+                            passwordsMatch = password == confirmPassword
+                            
+                            if passwordsMatch {
+                                signUpButtonState = .normal
+                                self.showSpinner = true
+                                UserServie().signUp(accountType: "free", username: email, password: password, name: name, companyName: companyName) { result in
+                                    self.showSpinner = false
+                                    switch result {
+                                    case .success(let user):
+                                        print("User created successfully: \(user)")
+                                        // Navigate to the next view or show a success message
+                                        self.isPresented = false
+                                    case .failure(let error):
+                                        print("Error creating user: \(error)")
+                                        // Show an error message and update the button state
+                                        signUpButtonState = .error
+                                        if let userServiceError = error as? UserServiceError, userServiceError == .emailAlreadyInUse {
+                                            errorMessage = "Email is already in use."
+                                        } else {
+                                            errorMessage = "An error occurred. Please try again."
+                                        }
                                     }
                                 }
+                            } else {
+                                errorMessage = "Passwords do not match."
                             }
                         }
                     }

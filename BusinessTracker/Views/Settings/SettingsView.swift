@@ -27,14 +27,19 @@ struct SettingsView: View {
     @Environment(\.openURL) var openURL
 
     var body: some View {
-        NavigationView {
+        ZStack {
             VStack {
+                HStack{
+                    Text("Settings:").font(.title).padding(.leading, 40)
+                    Spacer()
+                }
+                .padding(.top, 50)
+                if accountType == "free" {
+                    BannerView(adUnitID: "ca-app-pub-9324761796430059/9535673072")
+                        .frame(height: 50)
+                        .listRowInsets(EdgeInsets())
+                }
                 Form {
-                    if accountType == "free" {
-                        BannerView(adUnitID: "ca-app-pub-9324761796430059/9535673072")
-                            .frame(height: 50)
-                            .listRowInsets(EdgeInsets())
-                    }
                     managersSection()
                     accountSection()
                     actionsSection()
@@ -48,8 +53,6 @@ struct SettingsView: View {
                 .listRowInsets(EdgeInsets())
                 
             }
-
-            .navigationTitle("Settings")
             if showSpinner {
                 ActivityIndicatorView(isAnimating: showSpinner)
                     .frame(width: 50, height: 50)
@@ -92,7 +95,7 @@ struct SettingsView: View {
 
     private func accountSection() -> some View {
         Section(header: Text("Account")) {
-            settingsButton(title: "Subscribe", isPresented: $showSubscriptionView, view: AnyView(SubscriptionPromptView(isPresented: $showSubscriptionView)))
+            settingsButton2(title: "Subscribe", isPresented: $showSubscriptionView, view: AnyView(SubscriptionPromptView(isPresented: $showSubscriptionView)))
         }
     }
 
@@ -117,6 +120,17 @@ struct SettingsView: View {
     }
 
     private func settingsButton(title: String, isPresented: Binding<Bool>, view: AnyView) -> some View {
+        Button(action: { isPresented.wrappedValue.toggle() }) {
+            HStack {
+                Text(title)
+                    .foregroundColor(.primary)
+                Spacer()
+            }
+        }
+        .sheet(isPresented: isPresented, content: { view })
+    }
+    
+    private func settingsButton2(title: String, isPresented: Binding<Bool>, view: AnyView) -> some View {
         Button(action: { isPresented.wrappedValue.toggle() }) {
             HStack {
                 Text(title)
