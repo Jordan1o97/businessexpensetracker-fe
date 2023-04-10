@@ -141,18 +141,32 @@ struct TripLogMainView: View {
                 switch result {
                 case .success(let (groupedTripLogs, clientNames, vehicleNames)):
                     DispatchQueue.main.async {
-                        _ = groupedTripLogs.map { (key, tripLogs) -> (String, [TripLog]) in
-                            if selectedFilter == 1 || selectedFilter == 2 || selectedFilter == 3 {
-                                let groupedTripLogs = tripLogs.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
-                                return (key, groupedTripLogs)
+                        
+                        // Create a DateFormatter to parse the date strings
+                        let dateFormatter = DateFormatter()
+                        
+                        self.groupedTripLogs = groupedTripLogs.sorted(by: { (group1, group2) -> Bool in
+                            if selectedFilter == 0 || selectedFilter == 1 {
+                                dateFormatter.dateFormat = selectedFilter == 0 ? "MM/dd/yyyy" : "MM/yyyy"
+                                if let date1 = dateFormatter.date(from: group1.0), let date2 = dateFormatter.date(from: group2.0) {
+                                    return date1 < date2
+                                }
+                            } else {
+                                return group1.0 < group2.0
+                            }
+                            return false
+                        }).map { (key, tripLogs) -> (String, [TripLog]) in
+                            if selectedFilter == 2 || selectedFilter == 3 || selectedFilter == 4 {
+                                let sortedTripLogs = tripLogs.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
+                                return (key, sortedTripLogs)
                             } else {
                                 return (key, tripLogs)
                             }
                         }
+
                         self.tripLogs = groupedTripLogs.flatMap { $0.1 } // Flatten the array of trip logs
                         self.clientNames = clientNames
                         self.vehicleNames = vehicleNames
-                        self.groupedTripLogs = groupedTripLogs
                         self.isAnimating = false
                         print("groupedTripLogs: \(self.groupedTripLogs)")
                         print("Clients: \(self.clientNames)")

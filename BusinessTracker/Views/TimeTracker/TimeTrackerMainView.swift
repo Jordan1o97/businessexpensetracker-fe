@@ -130,22 +130,36 @@ struct TimeTrackerMainView: View {
             JobService().fetchFilteredJobsAndClients(userId: userId, authToken: token, selectedFilter: selectedFilter) { result in
                 switch result {
                     case .success(let (groupedJobs, clientNames)):
-                        DispatchQueue.main.async {
-                            _ = groupedJobs.map { (key, jobs) -> (String, [Job]) in
-                                if selectedFilter == 1 || selectedFilter == 2 || selectedFilter == 3 {
-                                    let groupedJobs = jobs.sorted(by: { $0.start.compare($1.start) == .orderedDescending })
-                                    return (key, groupedJobs)
-                                } else {
-                                    return (key, jobs)
+                    DispatchQueue.main.async {
+                        
+                        // Create a DateFormatter to parse the date strings
+                        let dateFormatter = DateFormatter()
+                        
+                        self.groupedJobs = groupedJobs.sorted(by: { (group1, group2) -> Bool in
+                            if selectedFilter == 0 || selectedFilter == 1 {
+                                dateFormatter.dateFormat = selectedFilter == 0 ? "MM/dd/yyyy" : "MM/yyyy"
+                                if let date1 = dateFormatter.date(from: group1.0), let date2 = dateFormatter.date(from: group2.0) {
+                                    return date1 < date2
                                 }
+                            } else {
+                                return group1.0 < group2.0
                             }
-                            self.jobs = groupedJobs.flatMap { $0.1 } // Flatten the array of jobs
-                            self.clientNames = clientNames
-                            self.groupedJobs = groupedJobs
-                            self.isAnimating = false
-                            print("groupedJobs: \(self.groupedJobs)")
-                            print("Clients: \(self.clientNames)")
+                            return false
+                        }).map { (key, jobs) -> (String, [Job]) in
+                            if selectedFilter == 2 || selectedFilter == 3 || selectedFilter == 4 {
+                                let sortedJobs = jobs.sorted(by: { $0.start.compare($1.start) == .orderedAscending })
+                                return (key, sortedJobs)
+                            } else {
+                                return (key, jobs)
+                            }
                         }
+
+                        self.jobs = groupedJobs.flatMap { $0.1 } // Flatten the array of jobs
+                        self.clientNames = clientNames
+                        self.isAnimating = false
+                        print("groupedJobs: \(self.groupedJobs)")
+                        print("Clients: \(self.clientNames)")
+                    }
                 case .failure(let error):
                     print("Error fetching jobs and clients: \(error)")
                     DispatchQueue.global(qos: .background).async {

@@ -168,9 +168,8 @@ struct EditTripLogView: View {
                                 .keyboardType(.numberPad)
                         }
                         HStack {
-                            Text("Total:")
-                            TextField("225.00", text: $total)
-                                .keyboardType(.numberPad)
+                            Text("Total: ")
+                            Text("\(total)")
                         }
                         HStack {
                             Text("Origin:")

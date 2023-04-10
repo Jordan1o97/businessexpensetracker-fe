@@ -13,16 +13,16 @@ struct BannerView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> GADBannerView {
         let bannerView = GADBannerView(adSize: GADAdSizeFromCGSize(CGSize(width: 320, height: 25)))
-        DispatchQueue.global(qos: .background).async {
-            bannerView.adUnitID = adUnitID
-            if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-                bannerView.rootViewController = windowScene.windows.first?.rootViewController
-            }
-            bannerView.load(GADRequest())
+        bannerView.adUnitID = adUnitID
+        if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+            bannerView.rootViewController = windowScene.windows.first?.rootViewController
         }
         return bannerView
     }
     
     func updateUIView(_ uiView: GADBannerView, context: Context) {
+        DispatchQueue.global(qos: .background).async {
+            uiView.load(GADRequest())
+        }
     }
 }
