@@ -15,7 +15,21 @@ struct SubscriptionPromptView: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
+<<<<<<< HEAD
+        VStack {
+            Spacer()
+
+            Text("Subscribe To Disable Ads")
+                .font(.title)
+                .bold()
+                .padding(.top)
+                .multilineTextAlignment(.center)
+            
+            Spacer()
+            
+=======
         ZStack {
+>>>>>>> 6280be9dbfc842bd6148564493296bbea61b6f00
             VStack {
                 Text("Subscribe To Disable Ads")
                     .font(.title)
@@ -88,11 +102,35 @@ struct SubscriptionPromptView: View {
                 .font(.caption)
                 .padding(.bottom)
             }
+<<<<<<< HEAD
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(20)
+            .padding(.horizontal)
+            
+            Spacer()
+            
+                HStack {
+                    Text("Read our")
+
+                    Link(destination: URL(string: "http://icubemedia.ca/trems.html")!, label: {
+                        Text("Terms")
+                            .underline()
+                    })
+                    
+                    Text("and").underline()
+                    
+                    Link(destination: URL(string: "http://icubemedia.ca/privacy-policy.html")!, label: {
+                        Text("Policy")
+                            .underline()
+                    })
+=======
             if disableTouch {
                 Color.clear
                     .contentShape(Rectangle())
                     .onTapGesture {}
                     .allowsHitTesting(true)
+>>>>>>> 6280be9dbfc842bd6148564493296bbea61b6f00
             }
         }
         .onChange(of: isLoading) { newValue in

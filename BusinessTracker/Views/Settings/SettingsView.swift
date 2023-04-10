@@ -51,7 +51,6 @@ struct SettingsView: View {
                 
                 // Removing padding on left and right cells
                 .listRowInsets(EdgeInsets())
-                
             }
             if showSpinner {
                 ActivityIndicatorView(isAnimating: showSpinner)
